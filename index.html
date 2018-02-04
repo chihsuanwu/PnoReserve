@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <title>TESTING...</title>
+</head>
+<body>
+  <div class="tool">
+
+  </div>
+  <!-- login page -->
+  <div id="login">
+    <div>登入</div>
+    <p>
+    <label for="user_name">帳號:</label>
+    <input name="user_name" id="user_name" type="text" value="" />
+    </p>
+    <p>
+    <label for="user_password">密碼:</label>
+    <input name="user_password" id="user_password" type="password" />
+    </p>
+    <input type="button" value="登入" id="btn-login">
+    <input type="button" value="註冊" id="btn-new-account">
+  </div>
+
+</body>
+<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBlbbhYZk5HYaTqxJ2_Xxla5Sygq33h4Os",
+    authDomain: "pnotest-55717.firebaseapp.com",
+    databaseURL: "https://pnotest-55717.firebaseio.com",
+    projectId: "pnotest-55717",
+    storageBucket: "pnotest-55717.appspot.com",
+    messagingSenderId: "225631731532"
+  };
+  firebase.initializeApp(config);
+</script>
+<script type="text/javascript" src="main.js"></script>
+</html>
