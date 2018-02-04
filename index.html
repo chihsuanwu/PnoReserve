@@ -2,6 +2,7 @@
 <html>
 <head>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
   <title>TESTING...</title>
 </head>
 <body>
@@ -9,18 +10,37 @@
 
   </div>
   <!-- login page -->
-  <div id="login">
+  <div id="login" align="center">
     <div>登入</div>
     <p>
-    <label for="user_name">帳號:</label>
-    <input name="user_name" id="user_name" type="text" value="" />
+    <label for="ln-id">學號:</label>
+    <input id="ln-id" type="text" />
     </p>
     <p>
-    <label for="user_password">密碼:</label>
-    <input name="user_password" id="user_password" type="password" />
+    <label for="password">密碼:</label>
+    <input id="ln-password" type="password" />
     </p>
-    <input type="button" value="登入" id="btn-login">
-    <input type="button" value="註冊" id="btn-new-account">
+    <input type="button" value="登入" id="ln-btn-login">
+    <input type="button" value="註冊" id="ln-btn-new-account">
+  </div>
+
+  <!-- new-account page -->
+  <div id="new-account" align="center">
+    <div>建立新帳號</div>
+    <p>
+    <label for="na-name">姓名:</label>
+    <input id="na-name" type="text" />
+    </p>
+    <p>
+    <label for="na-id">學號:</label>
+    <input id="na-id" type="text" />
+    </p>
+    <p>
+    <label for="na-password">密碼:</label>
+    <input id="na-password" type="password" />
+    </p>
+    <input type="button" value="建立新帳號" id="na-btn-new-account">
+    <input type="button" value="回登入頁面" id="na-btn-back-login">
   </div>
 
 </body>
