@@ -5,12 +5,12 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <title>TESTING...</title>
 </head>
-<body>
+<body align="center">
   <div class="tool">
 
   </div>
   <!-- login page -->
-  <div id="login" align="center">
+  <div id="login">
     <div>登入</div>
     <p>
     <label for="ln-id">學號:</label>
@@ -25,7 +25,7 @@
   </div>
 
   <!-- new-account page -->
-  <div id="new-account" align="center">
+  <div id="new-account">
     <div>建立新帳號</div>
     <p>
     <label for="na-name">姓名:</label>
@@ -41,6 +41,42 @@
     </p>
     <input type="button" value="建立新帳號" id="na-btn-new-account">
     <input type="button" value="回登入頁面" id="na-btn-back-login">
+  </div>
+
+  <!-- reserve page -->
+  <div id="reserve">
+    <p>
+    <input type="button" value="琴房一" id="re-btn-room1">
+    <input type="button" value="琴房二" id="re-btn-room2">
+    <input type="button" value="琴房三" id="re-btn-room3">
+    </p>
+    <div id="re-table">
+      <input type="button" value="<" id="re-lastweek">
+      <span>本周</span>
+      <input type="button" value=">" id="re-nextweek">
+    　<ul>
+        <li class="li-half"></li>
+        <li class="li-half">日期</li>
+        <li>MON</li>
+        <li>TUE</li>
+        <li>WED</li>
+        <li>THU</li>
+        <li>FRI</li>
+        <li>SAT</li>
+        <li>SUN</li>
+      </ul>
+      <ul>
+        <li class="li-half">時間</li>
+        <li class="li-half"></li>
+        <li>01/01</li>
+        <li>01/01</li>
+        <li>01/01</li>
+        <li>01/01</li>
+        <li>01/01</li>
+        <li>01/01</li>
+        <li>01/01</li>
+      </ul>
+    </div>
   </div>
 
 </body>

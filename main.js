@@ -14,6 +14,8 @@ $('#ln-btn-login').click(function() {
       if (password == snapshot.child(id).val().password) {
         name = snapshot.child(id).val().name;
         alert(name + '/'+ id + '登入成功');
+        $('#login').hide();
+        $('#reserve').show();
       } else {
         alert('密碼錯誤');
       }
