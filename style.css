@@ -2,9 +2,21 @@
   font-family: 'Noto Sans TC', sans-serif;
 }
 
-/*#login {
+#login {
+  /*
   display: none;
-}*/
+  */
+  margin: 0 auto;
+  width: 400px;
+}
+
+#login label,
+#new-account label {
+  float: left;
+  text-align: right;
+  width: 100px;
+  font-weight: bold;
+}
 
 #login input,
 #new-account input {
@@ -12,11 +24,15 @@
   border-radius: 4px;
   border: 1px solid #aaa;
   padding: 4px 6px;
+  width: 200px;
 }
 
 #new-account {
   display: none;
+  margin: 0 auto;
+  width: 400px;
 }
+
 
 #reserve {
   display: none;
@@ -35,6 +51,10 @@
 
 #re-table .re-half-li {
   width: 6.25%;
+}
+
+#re-table ul {
+  padding: 0 40px;
 }
 
 .re-dark li {

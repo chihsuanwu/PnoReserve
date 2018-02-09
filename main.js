@@ -1,6 +1,8 @@
 // Firebase data.
 var database = firebase.database();
 
+var account;
+
 // Login
 $('#ln-btn-login').click(function() {
   id = $('#ln-id').val();
@@ -9,13 +11,16 @@ $('#ln-btn-login').click(function() {
     alert('請輸入學號');
     return;
   }
-  firebase.database().ref('accounts').once('value', function(snapshot) {
-    if (snapshot.hasChild(id)) {
-      if (password == snapshot.child(id).val().password) {
-        name = snapshot.child(id).val().name;
+  firebase.database().ref('accounts/' + id).once('value', function(snapshot) {
+    if (snapshot.hasChild('password')) {
+      if (password == snapshot.val().password) {
+        name = snapshot.val().name;
         alert(name + '/'+ id + '登入成功');
+        firebase.database().ref('accounts/' + id + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
         $('#login').hide();
         $('#reserve').show();
+        account = { id: id, name: name};
+        updateReservePage(1);
       } else {
         alert('密碼錯誤');
       }
@@ -25,12 +30,24 @@ $('#ln-btn-login').click(function() {
   });
 })
 
+function updateReservePage(room) {
+  firebase.database().ref('accounts/' + id + '/lastLogin').once('value', function(snapshot) {
+    var date = new Date(snapshot.val());
+    var options = {
+        weekday: "long", year: "numeric", month: "short",
+        day: "numeric", hour: "2-digit", minute: "2-digit"
+    };
+    alert('測試取得資料庫時間: ' + date.toLocaleDateString("en-US", options));
+  });
+}
+
 // Siwtch to new account page.
 $('#ln-btn-new-account').click(function() {
   $('#login').hide();
   $('#new-account').show();
 })
 
+// Switch to login page
 $('#na-btn-back-login').click(function() {
   $('#na-name').val('');
   $('#na-id').val('');
