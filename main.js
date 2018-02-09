@@ -2,6 +2,7 @@
 var database = firebase.database();
 
 var account;
+var loginDate;
 
 // Login
 $('#ln-btn-login').click(function() {
@@ -21,7 +22,10 @@ $('#ln-btn-login').click(function() {
         $('#login').hide();
         $('#reserve').show();
         account = { id: id, name: name};
-        updateReservePage(1);
+        firebase.database().ref('accounts/' + id + '/lastLogin').once('value', function(snapshot) {
+          loginDate = new Date(snapshot.val());
+          initDate(false);
+        });
       } else {
         alert('密碼錯誤');
       }
@@ -29,20 +33,22 @@ $('#ln-btn-login').click(function() {
       alert('無此帳號');
     }
   });
-})
+});
 
 // Initialize the date of thisWeek or nextWeek(according to boolean arg 'nextWeek').
-function initDate(date, nextWeek) {
+function initDate(nextWeek) {
+  $('#re-nextweek').prop('disabled', nextWeek);
+  $('#re-lastweek').prop('disabled', !nextWeek);
+  $('#re-week').text(nextWeek ? '下周' : '本周');
   var now = {
-    year: date.getFullYear(),
-    month: date.getMonth(),
-    date: date.getDate(),
-    week: date.getDay()
+    year: loginDate.getFullYear(),
+    month: loginDate.getMonth(),
+    date: loginDate.getDate(),
+    week: loginDate.getDay()
   };
   var monthArray = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
   var weekArray = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
   if (now.year % 4 == 0) dateOfMonth[1] = 29;
-
 
   // Display the week.
   for (var i = 0; i < 7; ++i) {
@@ -72,22 +78,11 @@ function initDate(date, nextWeek) {
   }
 }
 
-function updateReservePage(room) {
-  firebase.database().ref('accounts/' + id + '/lastLogin').once('value', function(snapshot) {
-    initDate(new Date(snapshot.val()), false);
-    // var options = {
-    //     weekday: "long", year: "numeric", month: "short",
-    //     day: "numeric", hour: "2-digit", minute: "2-digit"
-    // };
-    // alert('測試取得資料庫時間: ' + date.toLocaleDateString("en-US", options));
-  });
-}
-
 // Siwtch to new account page.
 $('#ln-btn-new-account').click(function() {
   $('#login').hide();
   $('#new-account').show();
-})
+});
 
 // Switch to login page
 $('#na-btn-back-login').click(function() {
@@ -96,7 +91,7 @@ $('#na-btn-back-login').click(function() {
   $('#na-password').val('');
   $('#new-account').hide();
   $('#login').show();
-})
+});
 
 function createAccount(name, id, password) {
   return firebase.database().ref('accounts/' + id).set({
@@ -141,4 +136,16 @@ $('#na-btn-new-account').click(function() {
       }
     }
   });
-})
+});
+
+$('#re-lastweek').click(function() {
+  initDate(false);
+});
+
+$('#re-nextweek').click(function() {
+  initDate(true);
+});
+
+$('.re-li').click(function() {
+  alert(this.id + ' TESTING...');
+});

@@ -59,8 +59,10 @@
 
 .re-dark li {
   background-color: #999;
+  border: 1px solid #aaa;
 }
 
 .re-light li {
   background-color: #CCC;
+  border: 1px solid #aaa;
 }
