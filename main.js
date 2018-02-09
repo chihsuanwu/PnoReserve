@@ -17,6 +17,7 @@ $('#ln-btn-login').click(function() {
         name = snapshot.val().name;
         alert(name + '/'+ id + '登入成功');
         firebase.database().ref('accounts/' + id + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
+
         $('#login').hide();
         $('#reserve').show();
         account = { id: id, name: name};
@@ -30,14 +31,55 @@ $('#ln-btn-login').click(function() {
   });
 })
 
+// Initialize the date of thisWeek or nextWeek(according to boolean arg 'nextWeek').
+function initDate(date, nextWeek) {
+  var now = {
+    year: date.getFullYear(),
+    month: date.getMonth(),
+    date: date.getDate(),
+    week: date.getDay()
+  };
+  var monthArray = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+  var weekArray = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
+  if (now.year % 4 == 0) dateOfMonth[1] = 29;
+
+
+  // Display the week.
+  for (var i = 0; i < 7; ++i) {
+    // Get the date of this Sunday.
+    var date = now.date - now.week + i;
+    if (nextWeek) date += 7;
+    var month = now.month;
+    if (date < 1) {
+      if (month == 0) {
+        date += 31; month = 11;
+      } else {
+        date += monthArray[--month];
+      }
+    } else if (date > monthArray[now.month]) {
+      if (month == 11) {
+        date -= 31; month = 0;
+      } else {
+        date -= monthArray[++month];
+      }
+    }
+
+    var result = ++month < 10 ? '0' : '';
+    result += month + '-';
+    if (date < 10) result += '0';
+    result += date;
+    $('#re-' + weekArray[i]).text(result);
+  }
+}
+
 function updateReservePage(room) {
   firebase.database().ref('accounts/' + id + '/lastLogin').once('value', function(snapshot) {
-    var date = new Date(snapshot.val());
-    var options = {
-        weekday: "long", year: "numeric", month: "short",
-        day: "numeric", hour: "2-digit", minute: "2-digit"
-    };
-    alert('測試取得資料庫時間: ' + date.toLocaleDateString("en-US", options));
+    initDate(new Date(snapshot.val()), false);
+    // var options = {
+    //     weekday: "long", year: "numeric", month: "short",
+    //     day: "numeric", hour: "2-digit", minute: "2-digit"
+    // };
+    // alert('測試取得資料庫時間: ' + date.toLocaleDateString("en-US", options));
   });
 }
 
