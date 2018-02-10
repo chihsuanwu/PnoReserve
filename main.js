@@ -1,8 +1,14 @@
 // Firebase data.
 var database = firebase.database();
 
+var weekArray = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
+
 var account;
-var loginDate;
+var loginDate = null;
+
+// Datebase listener;
+var listener = null;
+var listenTo = '';
 
 // Login
 $('#ln-btn-login').click(function() {
@@ -23,8 +29,15 @@ $('#ln-btn-login').click(function() {
         $('#reserve').show();
         account = { id: id, name: name};
         firebase.database().ref('accounts/' + id + '/lastLogin').once('value', function(snapshot) {
-          loginDate = new Date(snapshot.val());
+          var now = new Date(snapshot.val());
+          loginDate = {
+            year: now.getFullYear(),
+            month: now.getMonth(),
+            date: now.getDate(),
+            week: now.getDay()
+          };
           initDate(false);
+          listenToReserveData(1, false);
         });
       } else {
         alert('密碼錯誤');
@@ -35,47 +48,71 @@ $('#ln-btn-login').click(function() {
   });
 });
 
+function getOffsetDate(offset) {
+  var monthArray = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+  if (loginDate.year % 4 == 0) monthArray[1] = 29;
+
+  var date = loginDate.date + offset;
+  var month = loginDate.month;
+  var year = loginDate.year;
+  if (date < 1) {
+    if (month == 0) {
+      date += 31; month = 11; --year;
+    } else {
+      date += monthArray[--month];
+    }
+  } else if (date > monthArray[loginDate.month]) {
+    if (month == 11) {
+      date -= 31; month = 0; ++year;
+    } else {
+      date -= monthArray[++month];
+    }
+  }
+
+  return { year: year, date: ('0' + date).slice(-2), month: ('0' + ++month).slice(-2) };
+}
+
 // Initialize the date of thisWeek or nextWeek(according to boolean arg 'nextWeek').
 function initDate(nextWeek) {
+  if (loginDate == null) alert('錯誤#69');
+
   $('#re-nextweek').prop('disabled', nextWeek);
   $('#re-lastweek').prop('disabled', !nextWeek);
   $('#re-week').text(nextWeek ? '下周' : '本周');
-  var now = {
-    year: loginDate.getFullYear(),
-    month: loginDate.getMonth(),
-    date: loginDate.getDate(),
-    week: loginDate.getDay()
-  };
-  var monthArray = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-  var weekArray = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
-  if (now.year % 4 == 0) dateOfMonth[1] = 29;
 
   // Display the week.
   for (var i = 0; i < 7; ++i) {
-    // Get the date of this Sunday.
-    var date = now.date - now.week + i;
-    if (nextWeek) date += 7;
-    var month = now.month;
-    if (date < 1) {
-      if (month == 0) {
-        date += 31; month = 11;
-      } else {
-        date += monthArray[--month];
-      }
-    } else if (date > monthArray[now.month]) {
-      if (month == 11) {
-        date -= 31; month = 0;
-      } else {
-        date -= monthArray[++month];
-      }
-    }
+    var offset = i - loginDate.week;
+    if (nextWeek) offset += 7;
+    var offsetDate = getOffsetDate(offset);
 
-    var result = ++month < 10 ? '0' : '';
-    result += month + '-';
-    if (date < 10) result += '0';
-    result += date;
-    $('#re-' + weekArray[i]).text(result);
+    var dateString = offsetDate.month + '-' + offsetDate.date;
+    $('#re-' + weekArray[i]).text(dateString);
   }
+}
+
+function listenToReserveData(room, nextWeek) {
+  if (loginDate == null) alert('錯誤#91');
+
+  // Get the date string that going to recive.
+  var offset = -loginDate.week;
+  if (nextWeek) offset += 7;
+  offsetDate = getOffsetDate(offset);
+  var dateString = offsetDate.year + offsetDate.month + offsetDate.date;
+
+  var target = 'room' + room + '/' + dateString;
+  // If date and room not change, return.
+  if (listenTo == target) return;
+
+  // Close the old listener and start a new one.
+  if (listener != null) listener.off('value');
+  listenTo = target;
+  listener = firebase.database().ref(listenTo).on('value', function(snapshot) {
+    $('.re-li').text('');
+    snapshot.forEach(function(child) {
+      $('#re-' + child.key).text(child.child('name').val());
+    });
+  });
 }
 
 // Siwtch to new account page.
@@ -132,7 +169,7 @@ $('#na-btn-new-account').click(function() {
         $('#new-account').hide();
         $('#login').show();
       } else {
-        alert('錯誤#1');
+        alert('錯誤#144');
       }
     }
   });
@@ -140,12 +177,25 @@ $('#na-btn-new-account').click(function() {
 
 $('#re-lastweek').click(function() {
   initDate(false);
+  listenToReserveData(1, false);
 });
 
 $('#re-nextweek').click(function() {
   initDate(true);
+  listenToReserveData(1, true);
 });
 
 $('.re-li').click(function() {
-  alert(this.id + ' TESTING...');
+  if ($(this).text() == '') {
+    if (confirm('預定此時間?')) {
+      firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).set({
+        name: account.name,
+        id: account.id
+      });
+    }
+  } else if ($(this).text() == account.name) {
+    if (confirm('取消預定?')) {
+      firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).remove();
+    }
+  }
 });
