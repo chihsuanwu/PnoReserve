@@ -192,7 +192,7 @@ $('#re-nextweek').click(function() {
 $('.re-li').click(function() {
   if ($(this).text() == '') {
     if (confirm('預定此時間?')) {
-      result = firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).set({
+      var result = firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).set({
         name: account.name,
         id: account.id
       });
@@ -202,7 +202,7 @@ $('.re-li').click(function() {
     }
   } else if ($(this).text() == account.name) {
     if (confirm('取消預定?')) {
-      resukt = firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).remove();
+      var result = firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).remove();
       if (result) {
         alert('成功取消');
       }
