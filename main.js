@@ -99,6 +99,7 @@ function listenToReserveData(room, nextWeek) {
   if (nextWeek) offset += 7;
   offsetDate = getOffsetDate(offset);
   var dateString = offsetDate.year + offsetDate.month + offsetDate.date;
+  //alert(dateString);
 
   var target = 'room' + room + '/' + dateString;
   // If date and room not change, return.
@@ -106,8 +107,10 @@ function listenToReserveData(room, nextWeek) {
 
   // Close the old listener and start a new one.
   if (listener != null) listener.off('value');
+
   listenTo = target;
-  listener = firebase.database().ref(listenTo).on('value', function(snapshot) {
+  listener = firebase.database().ref(listenTo);
+  listener.on('value', function(snapshot) {
     $('.re-li').text('');
     snapshot.forEach(function(child) {
       $('#re-' + child.key).text(child.child('name').val());
