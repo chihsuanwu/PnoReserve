@@ -110,6 +110,7 @@ function listenToReserveData(room, nextWeek) {
 
   listenTo = target;
   listener = firebase.database().ref(listenTo);
+  $('.re-li').text('');
   listener.on('value', function(snapshot) {
     $('.re-li').text('');
     snapshot.forEach(function(child) {
@@ -191,14 +192,20 @@ $('#re-nextweek').click(function() {
 $('.re-li').click(function() {
   if ($(this).text() == '') {
     if (confirm('預定此時間?')) {
-      firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).set({
+      result = firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).set({
         name: account.name,
         id: account.id
       });
+      if (result) {
+        alert('成功預定');
+      }
     }
   } else if ($(this).text() == account.name) {
     if (confirm('取消預定?')) {
-      firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).remove();
+      resukt = firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).remove();
+      if (result) {
+        alert('成功取消');
+      }
     }
   }
 });
