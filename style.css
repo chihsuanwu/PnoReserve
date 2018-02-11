@@ -1,5 +1,6 @@
 * {
   font-family: 'Noto Sans TC', sans-serif;
+  outline: none;
 }
 
 #login,
@@ -53,6 +54,30 @@
 
 #re-table ul {
   padding: 0 40px;
+}
+
+.re-btn-room {
+  border-radius: 8px;
+  border: 2px solid #aaa;
+  font-size: 24px;
+  line-height: 24px;
+  padding: 4px 6px;
+  width: 200px;
+}
+
+.re-btn-room:disabled {
+  background-color: #ff7;
+  border: 2px solid #333;
+  color: #555;
+}
+
+.re-btn-room:hover:enabled {
+  border: 2px solid #ff0;
+}
+
+.re-btn-room:active:enabled {
+  background-color: #ccc;
+  border: 2px solid #ff0;
 }
 
 .re-dark li {

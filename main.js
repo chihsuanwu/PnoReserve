@@ -6,6 +6,8 @@ var weekArray = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
 var account;
 var loginDate = null;
 
+var room = null;
+
 // Datebase listener;
 var listener = null;
 var listenTo = '';
@@ -37,7 +39,8 @@ $('#ln-btn-login').click(function() {
             week: now.getDay()
           };
           initDate(false);
-          listenToReserveData(1, false);
+          room = 1;
+          listenToReserveData(false);
         });
       } else {
         alert('密碼錯誤');
@@ -74,7 +77,7 @@ function getOffsetDate(offset) {
 
 // Initialize the date of thisWeek or nextWeek(according to boolean arg 'nextWeek').
 function initDate(nextWeek) {
-  if (loginDate == null) alert('錯誤#69');
+  if (loginDate == null) alert('錯誤#77');
 
   $('#re-nextweek').prop('disabled', nextWeek);
   $('#re-lastweek').prop('disabled', !nextWeek);
@@ -91,8 +94,13 @@ function initDate(nextWeek) {
   }
 }
 
-function listenToReserveData(room, nextWeek) {
-  if (loginDate == null) alert('錯誤#91');
+function listenToReserveData(nextWeek) {
+  if (loginDate == null) alert('錯誤#97');
+  if (room == null) alert('錯誤#98')
+
+  $('#re-btn-room1').prop('disabled', room == 1);
+  $('#re-btn-room2').prop('disabled', room == 2);
+  $('#re-btn-room3').prop('disabled', room == 3);
 
   // Get the date string that going to recive.
   var offset = -loginDate.week;
@@ -181,12 +189,18 @@ $('#na-btn-new-account').click(function() {
 
 $('#re-lastweek').click(function() {
   initDate(false);
-  listenToReserveData(1, false);
+  listenToReserveData(false);
 });
 
 $('#re-nextweek').click(function() {
   initDate(true);
-  listenToReserveData(1, true);
+  listenToReserveData(true);
+});
+
+$('.re-btn-room').click(function() {
+  room = parseInt(this.id.substr(11, 12));
+  initDate(false);
+  listenToReserveData(false);
 });
 
 $('.re-li').click(function() {
