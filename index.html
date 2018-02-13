@@ -5,6 +5,21 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanstc.css">
   <link rel="stylesheet" type="text/css" href="style.css">
+  <script language="JavaScript" type="text/javascript">
+        function ShowTime()
+        {
+            var NowDate = new Date();
+            var d = NowDate.getDay();
+            var dayNames = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+            document.getElementById('showbox').innerHTML = '目前時間：' + NowDate.toLocaleString() + '（' + dayNames[d] + '）';
+            setTimeout('ShowTime()', 1000);
+        }
+    </script>
+  <body align=right onload="ShowTime()">
+    <form id="form1" runat="server">
+        <div id = "showbox"></div>
+    </form>
+</body align=right>
   <title>TESTING...</title>
 </head>
 <body align="center">
