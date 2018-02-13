@@ -3,6 +3,12 @@
   outline: none;
 }
 
+#showbox {
+  font-size: 24px;
+  font-weight: bold;
+  float:right;
+}
+
 #login,
 #new-account {
   /*display: none;*/
