@@ -3,9 +3,12 @@
   outline: none;
 }
 
-#showbox {
+#tool {
+  height: 48px;
+}
+
+#tl-time {
   font-size: 24px;
-  font-weight: normal;
   float:right;
 }
 

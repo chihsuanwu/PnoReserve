@@ -1,3 +1,15 @@
+function updateTime() {
+  var nowDate = new Date();
+  var d = nowDate.getDay();
+  var dayNames = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+  $('#tl-time').text(nowDate.toLocaleString() + '(' + dayNames[d] + ')');
+  setTimeout('updateTime()', 1000);
+}
+
+$('#tl-time').ready(function() {
+  updateTime();
+});
+
 // Firebase data.
 var database = firebase.database();
 
@@ -14,40 +26,34 @@ var listenTo = '';
 
 // Login
 $('#ln-btn-login').click(function() {
-  id = $('#ln-id').val();
-  password = $('#ln-password').val();
-  if (id.length == 0 || id.trim().length == 0) {
-    alert('請輸入學號');
+  var email = $('#ln-email').val();
+  var password = $('#ln-password').val();
+  if (email.length == 0 || email.trim().length == 0) {
+    alert('請輸入信箱');
     return;
   }
-  firebase.database().ref('accounts/' + id).once('value', function(snapshot) {
-    if (snapshot.hasChild('password')) {
-      if (password == snapshot.val().password) {
-        name = snapshot.val().name;
-        alert(name + '/'+ id + '登入成功');
-        firebase.database().ref('accounts/' + id + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
-
-        $('#login').hide();
-        $('#reserve').show();
-        account = { id: id, name: name};
-        firebase.database().ref('accounts/' + id + '/lastLogin').once('value', function(snapshot) {
-          var now = new Date(snapshot.val());
-          loginDate = {
-            year: now.getFullYear(),
-            month: now.getMonth(),
-            date: now.getDate(),
-            week: now.getDay()
-          };
-          initDate(false);
-          room = 1;
-          listenToReserveData(false);
-        });
-      } else {
-        alert('密碼錯誤');
-      }
-    } else {
-      alert('無此帳號');
-    }
+  firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
+    firebase.database().ref('users/' + user.uid + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
+    firebase.database().ref('users/' + user.uid).once('value', function(snapshot) {
+      var name = snapshot.child('name').val();
+      var id = snapshot.child('id').val()
+      alert(name + '/' + id + '登入成功');
+      $('#login').hide();
+      $('#reserve').show();
+      account = { id: id, name: name};
+      var now = new Date(snapshot.child('lastLogin').val());
+      loginDate = {
+        year: now.getFullYear(),
+        month: now.getMonth(),
+        date: now.getDate(),
+        week: now.getDay()
+      };
+      initDate(false);
+      room = 1;
+      listenToReserveData(false);
+    });
+  }).catch(function(error) {
+    alert('登入失敗\n' + error.code + '\n' + error.message);
   });
 });
 
@@ -137,15 +143,16 @@ $('#ln-btn-new-account').click(function() {
 $('#na-btn-back-login').click(function() {
   $('#na-name').val('');
   $('#na-id').val('');
+  $('#na-email').val('');
   $('#na-password').val('');
   $('#new-account').hide();
   $('#login').show();
 });
 
-function createAccount(name, id, password) {
-  return firebase.database().ref('accounts/' + id).set({
+function createAccount(firebaseId, name, id, password) {
+  return firebase.database().ref('users/' + firebaseId).set({
     name: name,
-    password: password
+    id: id
   });
 }
 
@@ -154,6 +161,7 @@ $('#na-btn-new-account').click(function() {
   name = $('#na-name').val();
   id = $('#na-id').val();
   password = $('#na-password').val();
+  email = $('#na-email').val();
 
   if (name.length == 0 || name.trim().length == 0) {
     alert('請輸入名字');
@@ -163,27 +171,22 @@ $('#na-btn-new-account').click(function() {
     alert('請輸入學號');
     return;
   }
-  if (password.length < 6 || password.length > 20) {
-    alert('密碼須為6至20字');
-    return;
-  }
 
-  firebase.database().ref('accounts').once('value', function(snapshot) {
-    if (snapshot.hasChild(id)) {
-      alert(id + '為已註冊帳號');
+  firebase.auth().createUserWithEmailAndPassword(email, password).then(function(users) {
+    result = createAccount(users.uid, name, id, password);
+    if (result) {
+      alert('帳號建立成功');
+      $('#na-name').val('');
+      $('#na-id').val('');
+      $('#na-email').val('');
+      $('#na-password').val('');
+      $('#new-account').hide();
+      $('#login').show();
     } else {
-      result = createAccount(name, id, password);
-      if (result) {
-        alert('帳號建立成功');
-        $('#na-name').val('');
-        $('#na-id').val('');
-        $('#na-password').val('');
-        $('#new-account').hide();
-        $('#login').show();
-      } else {
-        alert('錯誤#144');
-      }
+      alert('錯誤#144');
     }
+  }).catch(function(error) {
+    alert('註冊失敗\n' + error.code + '\n' + error.message);
   });
 });
 

@@ -5,31 +5,18 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanstc.css">
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script language="JavaScript" type="text/javascript">
-        function ShowTime()
-        {
-            var NowDate = new Date();
-            var d = NowDate.getDay();
-            var dayNames = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
-            document.getElementById('showbox').innerHTML = '目前時間：' + NowDate.toLocaleString() + '（' + dayNames[d] + '）';
-            setTimeout('ShowTime()', 1000);
-        }
-    </script>
-  <body onload="ShowTime()">
-    <form id="form1" runat="server">
-        <div id = "showbox"></div>
-    </form>
-</body>
   <title>TESTING...</title>
 </head>
 <body align="center">
-  <div class="tool"></div>
+  <div id="tool">
+    <div id="tl-time"></div>
+  </div>
   <!-- login page -->
   <div id="login">
     <div class="title">登入</div>
     <p>
-    <label for="ln-id" autocomplete="on">學號:</label>
-    <input id="ln-id" type="text" />
+    <label for="ln-email">電子郵件:</label>
+    <input id="ln-email" type="text"/>
     </p>
     <p>
     <label for="password">密碼:</label>
@@ -52,7 +39,7 @@
     </p>
     <p>
     <label for="na-email">電子郵件:</label>
-    <input id="na-enail" type="text" />
+    <input id="na-email" type="text" />
     </p>
     <p>
     <label for="na-password">密碼:</label>
