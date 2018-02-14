@@ -101,8 +101,8 @@ function initDate(nextWeek) {
 }
 
 function listenToReserveData(nextWeek) {
-  if (loginDate == null) alert('錯誤#97');
-  if (room == null) alert('錯誤#98')
+  if (loginDate == null) alert('錯誤#104');
+  if (room == null) alert('錯誤#105');
 
   $('#re-btn-room1').prop('disabled', room == 1);
   $('#re-btn-room2').prop('disabled', room == 2);
@@ -113,7 +113,6 @@ function listenToReserveData(nextWeek) {
   if (nextWeek) offset += 7;
   offsetDate = getOffsetDate(offset);
   var dateString = offsetDate.year + offsetDate.month + offsetDate.date;
-  //alert(dateString);
 
   var target = 'room' + room + '/' + dateString;
   // If date and room not change, return.
@@ -149,7 +148,7 @@ $('#na-btn-back-login').click(function() {
   $('#login').show();
 });
 
-function createAccount(firebaseId, name, id, password) {
+function createAccount(firebaseId, name, id) {
   return firebase.database().ref('users/' + firebaseId).set({
     name: name,
     id: id
@@ -173,7 +172,7 @@ $('#na-btn-new-account').click(function() {
   }
 
   firebase.auth().createUserWithEmailAndPassword(email, password).then(function(users) {
-    result = createAccount(users.uid, name, id, password);
+    result = createAccount(users.uid, name, id);
     if (result) {
       alert('帳號建立成功');
       $('#na-name').val('');
@@ -183,7 +182,7 @@ $('#na-btn-new-account').click(function() {
       $('#new-account').hide();
       $('#login').show();
     } else {
-      alert('錯誤#144');
+      alert('錯誤#185');
     }
   }).catch(function(error) {
     alert('註冊失敗\n' + error.code + '\n' + error.message);

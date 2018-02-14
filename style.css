@@ -3,6 +3,10 @@
   outline: none;
 }
 
+body {
+  background-color: #eee;
+}
+
 #tool {
   height: 48px;
 }
