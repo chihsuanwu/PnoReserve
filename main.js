@@ -32,17 +32,17 @@ $('#ln-btn-login').click(function() {
     alert('請輸入信箱');
     return;
   }
-  $(this).prop('disabled', true);
+  $('#loading').show();
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
     // Set last login time.
     firebase.database().ref('users/' + user.uid + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
     // Get user data.
     firebase.database().ref('users/' + user.uid).once('value', function(snapshot) {
+      $('#loading').hide();
       var name = snapshot.child('name').val();
       var id = snapshot.child('id').val()
-      alert(name + '/' + id + '登入成功');
       $('#login').hide();
-      $(this).prop('disabled', false);
+      $('#loading').hide();
       $('#reserve').show();
       $('#tl-user').text(name);
       account = { id: id, name: name, email: email };
@@ -57,10 +57,11 @@ $('#ln-btn-login').click(function() {
       initDate(false);
       room = 1;
       listenToReserveData(false);
+      alert(name + '/' + id + '登入成功');
     });
   }).catch(function(error) {
+    $('#loading').hide();
     alert('登入失敗\n' + error.code + '\n' + error.message);
-    $(this).prop('disabled', false);
   });
 });
 
@@ -171,26 +172,26 @@ $('#na-btn-new-account').click(function() {
     return;
   }
 
-  $(this).prop('disabled', true);
+  $('#loading').show();
   firebase.auth().createUserWithEmailAndPassword(email, password).then(function(users) {
     // Create account in database.
     firebase.database().ref('users/' + users.uid).set({ name: name, id: id }, function(error) {
+      $('#loading').hide();
       if (error) {
         alert('#錯誤171\n' + error.code + '\n' + error.message);
       } else {
-        alert('帳號建立成功');
         $('#na-name').val('');
         $('#na-id').val('');
         $('#na-email').val('');
         $('#na-password').val('');
         $('#new-account').hide();
         $('#login').show();
+        alert('帳號建立成功');
       }
-      $(this).prop('disabled', false);
     });
   }).catch(function(error) {
+    $('#loading').hide();
     alert('註冊失敗\n' + error.code + '\n' + error.message);
-    $(this).prop('disabled', false);
   });
 });
 
