@@ -28,7 +28,7 @@ body {
 }
 
 #time {
-  bottom: 1;
+  bottom: 0;
   font-size: 20px;
   position: fixed;
   right: 0;
