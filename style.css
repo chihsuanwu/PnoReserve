@@ -29,6 +29,7 @@ body {
 
 #time {
   font-size: 20px;
+  float:right;
 }
 
 #login,
