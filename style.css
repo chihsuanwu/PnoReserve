@@ -7,6 +7,16 @@ body {
   background-color: #eee;
 }
 
+.headtitle {
+  color: white;
+  font-size: 30px;
+  font-weight:bold;
+  text-align: center;
+  float: center;
+  background-color:#003344;
+  padding: 15px
+}
+
 #tool {
   height: 48px;
 }
