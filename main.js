@@ -10,12 +10,18 @@ $('#time').ready(function() {
   updateTime();
 });
 
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] == value);
+}
+
 // Firebase data.
 var database = firebase.database();
 
 var weekArray = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
 
-var account;
+var account = {};
+var reserveData = {};
+var reserveCounter = 0;
 var loginDate = null;
 
 var room = null;
@@ -40,12 +46,20 @@ $('#ln-btn-login').click(function() {
     firebase.database().ref('users/' + user.uid).once('value', function(snapshot) {
       $('#loading').hide();
       var name = snapshot.child('name').val();
-      var id = snapshot.child('id').val()
+      var id = snapshot.child('id').val();
       $('#login').hide();
       $('#loading').hide();
       $('#reserve').show();
       $('#tl-user').text(name);
-      account = { firebaseId: user.uid, id: id, name: name, email: email };
+      account = {
+        firebaseId: user.uid,
+        id: id, name: name,
+        email: email
+      };
+      reserveCounter = snapshot.child('reservedCounter').val();
+      snapshot.child('reserved').forEach(function(child) {
+        reserveData[child.key] = child.val();
+      });
       var now = new Date(snapshot.child('lastLogin').val());
       loginDate = {
         year: now.getFullYear(),
@@ -108,8 +122,10 @@ function initDate(nextWeek) {
 }
 
 function listenToReserveData(nextWeek) {
-  if (loginDate == null) alert('錯誤#104');
-  if (room == null) alert('錯誤#105');
+  if (loginDate == null || room == null) {
+    alert('錯誤#104');
+    return;
+  }
 
   $('#re-btn-room1').prop('disabled', room == 1);
   $('#re-btn-room2').prop('disabled', room == 2);
@@ -174,7 +190,7 @@ $('#na-btn-new-account').click(function() {
   $('#loading').show();
   firebase.auth().createUserWithEmailAndPassword(email, password).then(function(users) {
     // Create account in database.
-    firebase.database().ref('users/' + users.uid).set({ name: name, id: id }, function(error) {
+    firebase.database().ref('users/' + users.uid).set({ name: name, id: id, reservedCounter: 0 }, function(error) {
       $('#loading').hide();
       if (error) {
         alert('#錯誤171\n' + error.code + '\n' + error.message);
@@ -205,40 +221,68 @@ $('#re-nextweek').click(function() {
 });
 
 $('.re-btn-room').click(function() {
-  room = parseInt(this.id.substr(11, 12));
+  room = parseInt(this.id.slice(11, 12));
   initDate(false);
   listenToReserveData(false);
 });
 
 $('.re-li').click(function() {
   if ($(this).text() == '') {
-    // Update data in users/<uid>/reserved/<data-time-room>/ and <room>/<date>/<time> simultaneously.
+    if (reserveCounter >= 7) {
+      alert('預定時段已達上限7次');
+      return;
+    }
+    // Update these data simultaneously:
+    //   users/<uid>/reserved/time<n>
+    //   users/<uid>/reservedCounter
+    //   <room>/<date>/<time>
     if (confirm('預定此時間?')) {
-      var reserveData = {};
-      reserveData['users/' + account.firebaseId + '/reserved/' +
-                  listenTo.substr(5, 13) + '-' + this.id.substr(3, 9) + '-' + listenTo.substr(0, 5)] = true;
-      reserveData[listenTo + '/' + this.id.substr(3, 9)] = {
+      var data = {};
+      var day = this.id.slice(3, 9);
+      var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
+      data['users/' + account.firebaseId + '/reserved/time' + (reserveCounter + 1)] = dateRoomString;
+      data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter + 1;
+      data[listenTo + '/' + day] = {
         name: account.name,
-        id: account.id
+        id: account.id,
+        count: reserveCounter + 1
       }
-      firebase.database().ref().update(reserveData, function(error) {
+      firebase.database().ref().update(data, function(error) {
         if (error) {
           alert('#錯誤211\n' + error.code + '\n' + error.message);
         } else {
+          ++reserveCounter;
+          reserveData['time' + reserveCounter] = dateRoomString;
           alert('成功預定');
         }
       });
     }
   } else if ($(this).text() == account.name) {
     if (confirm('取消預定?')) {
-      var reserveData = {};
-      reserveData['users/' + account.firebaseId + '/reserved/' +
-                  listenTo.substr(5, 13) + '-' + this.id.substr(3, 9) + '-' + listenTo.substr(0, 5)] = null;
-      reserveData[listenTo + '/' + this.id.substr(3, 9)] = null
-      firebase.database().ref().update(reserveData, function(error) {
+      var data = {};
+      var day = this.id.slice(3, 9);
+      var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
+      // Last data is the data that going to delete.
+      var matchLast = reserveData['time' + reserveCounter] === dateRoomString;
+      if (!matchLast) {
+        var timeN = getKeyByValue(reserveData, dateRoomString);
+        data['users/' + account.firebaseId + '/reserved/' + timeN] = reserveData['time' + reserveCounter];
+        data[listenTo + '/' + reserveData['time' + reserveCounter].slice(9, 15) + '/count'] =
+          parseInt(timeN.slice(4, 5));
+      }
+      data['users/' + account.firebaseId + '/reserved/time' + reserveCounter] = null;
+      data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter - 1;
+      data[listenTo + '/' + day] = null;
+      firebase.database().ref().update(data, function(error) {
         if (error) {
           alert('#錯誤221\n' + error.code + '\n' + error.message);
         } else {
+          if (!matchLast) {
+            var timeN = getKeyByValue(reserveData, dateRoomString);
+            reserveData[timeN] = reserveData['time' + reserveCounter];
+          }
+          reserveData['time' + reserveCounter] = null;
+          --reserveCounter;
           alert('成功取消');
         }
       });
