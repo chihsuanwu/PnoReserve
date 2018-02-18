@@ -45,7 +45,7 @@ $('#ln-btn-login').click(function() {
       $('#loading').hide();
       $('#reserve').show();
       $('#tl-user').text(name);
-      account = { id: id, name: name, email: email };
+      account = { firebaseId: user.uid, id: id, name: name, email: email };
       var now = new Date(snapshot.child('lastLogin').val());
       loginDate = {
         year: now.getFullYear(),
@@ -212,11 +212,16 @@ $('.re-btn-room').click(function() {
 
 $('.re-li').click(function() {
   if ($(this).text() == '') {
+    // Update data in users/<uid>/reserved/<data-time-room>/ and <room>/<date>/<time> simultaneously.
     if (confirm('預定此時間?')) {
-      firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).set({
+      var reserveData = {};
+      reserveData['users/' + account.firebaseId + '/reserved/' +
+                  listenTo.substr(5, 13) + '-' + this.id.substr(3, 9) + '-' + listenTo.substr(0, 5)] = true;
+      reserveData[listenTo + '/' + this.id.substr(3, 9)] = {
         name: account.name,
         id: account.id
-      }, function(error) {
+      }
+      firebase.database().ref().update(reserveData, function(error) {
         if (error) {
           alert('#錯誤211\n' + error.code + '\n' + error.message);
         } else {
@@ -226,7 +231,11 @@ $('.re-li').click(function() {
     }
   } else if ($(this).text() == account.name) {
     if (confirm('取消預定?')) {
-      firebase.database().ref(listenTo + '/' + this.id.substr(3, 9)).remove(function(error) {
+      var reserveData = {};
+      reserveData['users/' + account.firebaseId + '/reserved/' +
+                  listenTo.substr(5, 13) + '-' + this.id.substr(3, 9) + '-' + listenTo.substr(0, 5)] = null;
+      reserveData[listenTo + '/' + this.id.substr(3, 9)] = null
+      firebase.database().ref().update(reserveData, function(error) {
         if (error) {
           alert('#錯誤221\n' + error.code + '\n' + error.message);
         } else {
