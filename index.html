@@ -25,7 +25,7 @@
 
 
   <!-- login page -->
-  <div id="login">
+  <form id="login" autocomplete="on" onsubmit="return false;">
     <div class="title">登入</div>
     <p>
     <label for="ln-email">電子郵件:</label>
@@ -33,11 +33,11 @@
     </p>
     <p>
     <label for="password">密碼:</label>
-    <input id="ln-password" type="password" />
+    <input id="ln-password" autocomplete="on" type="password" />
     </p>
     <button id="ln-btn-login">登入</button>
     <button id="ln-btn-new-account">註冊</button>
-  </div>
+  </form>
 
   <!-- new-account page -->
   <div id="new-account">

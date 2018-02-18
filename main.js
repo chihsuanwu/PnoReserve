@@ -57,7 +57,6 @@ $('#ln-btn-login').click(function() {
       initDate(false);
       room = 1;
       listenToReserveData(false);
-      alert(name + '/' + id + '登入成功');
     });
   }).catch(function(error) {
     $('#loading').hide();
