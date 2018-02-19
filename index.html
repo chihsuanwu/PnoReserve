@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanstc.css">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="loading.css">
+  <link rel="stylesheet" type="text/css" href="popup.css">
   <title>TESTING...</title>
 </head>
 <body align="center">
@@ -17,50 +18,55 @@
       <div class="l-obj" id="l-obj-four"></div>
     </div>
   </div>
+  <div id="popup">
+
+  </div>
   <div class="headtitle">🎹國立成功大學鋼琴社 NCKU Piano Club🎹</div>
   <div id="time"></div>
   <div id="tool">
     <button id="tl-user"></button>
   </div>
 
+  <div id="login-new-account">
+    <!-- login page -->
+    <form id="login" autocomplete="on" onsubmit="return false;">
+      <div class="title">登入</div>
+      <p>
+      <label for="ln-email">電子郵件:</label>
+      <input id="ln-email" type="text"/>
+      </p>
+      <p>
+      <label for="password">密碼:</label>
+      <input id="ln-password" autocomplete="on" type="password" />
+      </p>
+      <button id="ln-btn-login">登入</button>
+      <button id="ln-btn-new-account">註冊</button>
+    </form>
 
-  <!-- login page -->
-  <form id="login" autocomplete="on" onsubmit="return false;">
-    <div class="title">登入</div>
-    <p>
-    <label for="ln-email">電子郵件:</label>
-    <input id="ln-email" type="text"/>
-    </p>
-    <p>
-    <label for="password">密碼:</label>
-    <input id="ln-password" autocomplete="on" type="password" />
-    </p>
-    <button id="ln-btn-login">登入</button>
-    <button id="ln-btn-new-account">註冊</button>
-  </form>
-
-  <!-- new-account page -->
-  <div id="new-account">
-    <div class="title">建立新帳號</div>
-    <p>
-    <label for="na-name">姓名:</label>
-    <input id="na-name" type="text" />
-    </p>
-    <p>
-    <label for="na-id">學號:</label>
-    <input id="na-id" type="text" />
-    </p>
-    <p>
-    <label for="na-email">電子郵件:</label>
-    <input id="na-email" type="text" />
-    </p>
-    <p>
-    <label for="na-password">密碼:</label>
-    <input id="na-password" type="password" />
-    </p>
-    <button id="na-btn-new-account">建立新帳號</button>
-    <button id="na-btn-back-login">回登入頁面</button>
+    <!-- new-account page -->
+    <div id="new-account" autocomplete="off">
+      <div class="title">建立新帳號</div>
+      <p>
+      <label for="na-name">姓名:</label>
+      <input id="na-name" type="text" />
+      </p>
+      <p>
+      <label for="na-id">學號:</label>
+      <input id="na-id" type="text" />
+      </p>
+      <p>
+      <label for="na-email">電子郵件:</label>
+      <input id="na-email" type="text" />
+      </p>
+      <p>
+      <label for="na-password">密碼:</label>
+      <input id="na-password" type="password" />
+      </p>
+      <button id="na-btn-new-account">建立新帳號</button>
+      <button id="na-btn-back-login">回登入頁面</button>
+    </div>
   </div>
+
 
   <!-- reserve page -->
   <div id="reserve">

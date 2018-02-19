@@ -1,0 +1,11 @@
+#popup {
+  background-color: #fff;
+  display: none;
+  height: 200px;
+  position: absolute;
+  width: 320px;
+  z-index: 10;
+
+
+
+}

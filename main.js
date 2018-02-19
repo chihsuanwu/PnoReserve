@@ -47,7 +47,7 @@ $('#ln-btn-login').click(function() {
       $('#loading').hide();
       var name = snapshot.child('name').val();
       var id = snapshot.child('id').val();
-      $('#login').hide();
+      $('#login-new-account').hide();
       $('#loading').hide();
       $('#reserve').show();
       $('#tl-user').text(name);
@@ -89,13 +89,13 @@ function getOffsetDate(offset) {
     if (month == 0) {
       date += 31; month = 11; --year;
     } else {
-      date += monthArray[--month];
+      date += monthArray[month--];
     }
-  } else if (date > monthArray[loginDate.month]) {
+  } else if (date > monthArray[month]) {
     if (month == 11) {
       date -= 31; month = 0; ++year;
     } else {
-      date -= monthArray[++month];
+      date -= monthArray[month++];
     }
   }
 
@@ -155,10 +155,24 @@ function listenToReserveData(nextWeek) {
   });
 }
 
+$('#new-account').ready(function() {
+  $('#new-account').css({
+    opacity: "hide",
+    left: "+=400px"
+  });
+  alert('由於測試關係,資料庫已於2/19 21:30重設,在此之前的帳號請重新註冊');
+});
+
 // Siwtch to new account page.
 $('#ln-btn-new-account').click(function() {
-  $('#login').hide();
-  $('#new-account').show();
+  $('#login').animate({
+    opacity: "hide",
+    left: "-=400px"
+  }, 200);
+  $('#new-account').animate({
+    opacity: "show",
+    left: "-=400px"
+  }, 200);
 });
 
 // Switch to login page
@@ -167,8 +181,14 @@ $('#na-btn-back-login').click(function() {
   $('#na-id').val('');
   $('#na-email').val('');
   $('#na-password').val('');
-  $('#new-account').hide();
-  $('#login').show();
+  $('#login').animate({
+    opacity: "show",
+    left: "+=400px"
+  }, 200);
+  $('#new-account').animate({
+    opacity: "hide",
+    left: "+=400px"
+  }, 200);
 });
 
 // Create new account.
@@ -199,8 +219,14 @@ $('#na-btn-new-account').click(function() {
         $('#na-id').val('');
         $('#na-email').val('');
         $('#na-password').val('');
-        $('#new-account').hide();
-        $('#login').show();
+        $('#login').animate({
+          opacity: "show",
+          left: "+=400px"
+        }, 200);
+        $('#new-account').animate({
+          opacity: "hide",
+          left: "+=400px"
+        }, 200);
         alert('帳號建立成功');
       }
     });
@@ -226,7 +252,19 @@ $('.re-btn-room').click(function() {
   listenToReserveData(false);
 });
 
-$('.re-li').click(function() {
+function showPopUp(text, func) {
+  // body...
+}
+
+$('.re-li').click(function(e) {
+  //getting height and width of the message box
+    // var height = $('#popuup_div').height();
+    // var width = $('#popuup_div').width();
+    // //calculating offset for displaying popup message
+    // leftVal=e.pageX-(width/2)+"px";
+    // topVal=e.pageY-(height/2)+"px";
+    //show the popup message and hide with fading effect
+    //$('#popuup_div').css({left:leftVal,top:topVal}).show().fadeOut(1500);
   if ($(this).text() == '') {
     if (reserveCounter >= 7) {
       alert('預定時段已達上限7次');

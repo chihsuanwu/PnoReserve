@@ -32,9 +32,17 @@ body {
   float: right;
 }
 
+#login-new-account {
+  height: 400px;
+  margin: auto;
+  overflow: hidden;
+  position: relative;
+  width: 400px;
+}
+
 #login,
 #new-account {
-  /*display: none;*/
+  position: absolute;
   margin: 0 auto;
   padding: 20px;
   width: 360px;
