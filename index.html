@@ -44,7 +44,7 @@
     </form>
 
     <!-- new-account page -->
-    <div id="new-account" autocomplete="off">
+    <form id="new-account" autocomplete="off" onsubmit="return false;">
       <div class="title">建立新帳號</div>
       <p>
       <label for="na-name">姓名:</label>
@@ -56,15 +56,15 @@
       </p>
       <p>
       <label for="na-email">電子郵件:</label>
-      <input id="na-email" type="text" />
+      <input id="na-email" autocomplete="off" type="text" />
       </p>
       <p>
       <label for="na-password">密碼:</label>
-      <input id="na-password" type="password" />
+      <input id="na-password" autocomplete="off" type="password" />
       </p>
       <button id="na-btn-new-account">建立新帳號</button>
       <button id="na-btn-back-login">回登入頁面</button>
-    </div>
+    </form>
   </div>
 
 
