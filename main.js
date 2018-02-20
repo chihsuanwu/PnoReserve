@@ -313,6 +313,14 @@ function cancelReserve(day) {
   });
 }
 
+$('#new-account').ready(function() {
+   $('#new-account').css({
+     opacity: "hide",
+     left: "+=400px"
+   });
+   alert('由於測試關係,資料庫已於2/19 21:30重設,在此之前的帳號請重新註冊');
+});
+
 $('.re-li').click(function(e) {
   //getting height and width of the message box
   //var height = $('#popup').height();
