@@ -3,6 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanstc.css">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="loading.css">
@@ -19,7 +21,12 @@
     </div>
   </div>
   <div id="popup">
-
+    <div id="p-container">
+      <div id="p-title">預定此時間?</div>
+      <div id="p-message">訊息...</div>
+      <button id="p-ok">確定</button>
+      <button id="p-cancel">取消</button>
+    </div>
   </div>
   <div class="headtitle">🎹國立成功大學鋼琴社 NCKU Piano Club🎹</div>
   <div id="time"></div>
@@ -39,8 +46,8 @@
       <label for="password">密碼:</label>
       <input id="ln-password" autocomplete="on" type="password" />
       </p>
-      <button id="ln-btn-login">登入</button>
-      <button id="ln-btn-new-account">註冊</button>
+      <button id="ln-login">登入</button>
+      <button id="ln-new-account">註冊</button>
     </form>
 
     <!-- new-account page -->
@@ -51,19 +58,19 @@
       <input id="na-name" type="text" />
       </p>
       <p>
-      <label for="na-id">學號:</label>
-      <input id="na-id" type="text" />
-      </p>
-      <p>
       <label for="na-email">電子郵件:</label>
       <input id="na-email" autocomplete="off" type="text" />
+      </p>
+      <p>
+      <label for="na-id">學號:</label>
+      <input id="na-id" type="text" />
       </p>
       <p>
       <label for="na-password">密碼:</label>
       <input id="na-password" autocomplete="off" type="password" />
       </p>
-      <button id="na-btn-new-account">建立新帳號</button>
-      <button id="na-btn-back-login">回登入頁面</button>
+      <button id="na-new-account">建立新帳號</button>
+      <button id="na-back-login">回登入頁面</button>
     </form>
   </div>
 
@@ -72,9 +79,9 @@
   <div id="reserve">
      <div id="time"></div>
     <p>
-    <button class="re-btn-room" id="re-btn-room1">琴房一</button>
-    <button class="re-btn-room" id="re-btn-room2">琴房二</button>
-    <button class="re-btn-room" id="re-btn-room3">琴房三</button>
+    <button class="re-room" id="re-room1">琴房一</button>
+    <button class="re-room" id="re-room2">琴房二</button>
+    <button class="re-room" id="re-room3">琴房三</button>
     </p>
     <div id="re-table">
       <button id="re-lastweek"><</button>
@@ -92,13 +99,13 @@
       </ul>
       <ul>
         <li>時間</li>
-        <li id="re-sun">01/01</li>
-        <li id="re-mon">01/01</li>
-        <li id="re-tue">01/01</li>
-        <li id="re-wed">01/01</li>
-        <li id="re-thu">01/01</li>
-        <li id="re-fri">01/01</li>
-        <li id="re-sat">01/01</li>
+        <li id="re-sun"></li>
+        <li id="re-mon"></li>
+        <li id="re-tue"></li>
+        <li id="re-wed"></li>
+        <li id="re-thu"></li>
+        <li id="re-fri"></li>
+        <li id="re-sat"></li>
        </ul>
       <ul class="re-light">
         <li>08:00~09:00</li>

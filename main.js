@@ -31,7 +31,7 @@ var listener = null;
 var listenTo = '';
 
 // Login
-$('#ln-btn-login').click(function() {
+$('#ln-login').click(function() {
   var email = $('#ln-email').val();
   var password = $('#ln-password').val();
   if (email.length == 0 || email.trim().length == 0) {
@@ -127,9 +127,9 @@ function listenToReserveData(nextWeek) {
     return;
   }
 
-  $('#re-btn-room1').prop('disabled', room == 1);
-  $('#re-btn-room2').prop('disabled', room == 2);
-  $('#re-btn-room3').prop('disabled', room == 3);
+  $('#re-room1').prop('disabled', room == 1);
+  $('#re-room2').prop('disabled', room == 2);
+  $('#re-room3').prop('disabled', room == 3);
 
   // Get the date string that going to recive.
   var offset = -loginDate.week;
@@ -155,44 +155,24 @@ function listenToReserveData(nextWeek) {
   });
 }
 
-$('#new-account').ready(function() {
-  $('#new-account').css({
-    opacity: "hide",
-    left: "+=400px"
-  });
-  alert('由於測試關係,資料庫已於2/19 21:30重設,在此之前的帳號請重新註冊');
-});
-
 // Siwtch to new account page.
-$('#ln-btn-new-account').click(function() {
-  $('#login').animate({
-    opacity: "hide",
-    left: "-=400px"
-  }, 200);
-  $('#new-account').animate({
-    opacity: "show",
-    left: "-=400px"
-  }, 200);
+$('#ln-new-account').click(function() {
+  $('#login').animate({ left: "-=400px" }, 200);
+  $('#new-account').animate({ left: "-=400px" }, 200);
 });
 
 // Switch to login page
-$('#na-btn-back-login').click(function() {
+$('#na-back-login').click(function() {
   $('#na-name').val('');
   $('#na-id').val('');
   $('#na-email').val('');
   $('#na-password').val('');
-  $('#login').animate({
-    opacity: "show",
-    left: "+=400px"
-  }, 200);
-  $('#new-account').animate({
-    opacity: "hide",
-    left: "+=400px"
-  }, 200);
+  $('#login').animate({ left: "+=400px" }, 200);
+  $('#new-account').animate({ left: "+=400px" }, 200);
 });
 
 // Create new account.
-$('#na-btn-new-account').click(function() {
+$('#na-new-account').click(function() {
   name = $('#na-name').val();
   id = $('#na-id').val();
   password = $('#na-password').val();
@@ -219,14 +199,8 @@ $('#na-btn-new-account').click(function() {
         $('#na-id').val('');
         $('#na-email').val('');
         $('#na-password').val('');
-        $('#login').animate({
-          opacity: "show",
-          left: "+=400px"
-        }, 200);
-        $('#new-account').animate({
-          opacity: "hide",
-          left: "+=400px"
-        }, 200);
+        $('#login').animate({ left: "+=400px" }, 200);
+        $('#new-account').animate({ left: "+=400px" }, 200);
         alert('帳號建立成功');
       }
     });
@@ -246,85 +220,175 @@ $('#re-nextweek').click(function() {
   listenToReserveData(true);
 });
 
-$('.re-btn-room').click(function() {
+$('.re-room').click(function() {
   room = parseInt(this.id.slice(11, 12));
   initDate(false);
   listenToReserveData(false);
 });
 
-function showPopUp(text, func) {
-  // body...
+function showPopUp(x, y, title, message, status, okArgs) {
+  $('#p-title').text(title);
+  $('#p-message').text(message);
+  $('#p-ok').off('click');
+  $('#p-ok').click(function() {
+    switch (status) {
+      case 'RESERVE': reserve(okArgs); break;
+      case 'CANCELRESERVE': cancelReserve(okArgs); break;
+      default: alert('#錯誤');
+    }
+    $('#popup').hide();
+  });
+  $('#popup').show();
+  $('#p-container').css({ left: x, top: y });
+}
+
+$('#popup').click(function() {
+  $('#p-container').animate({ "border-color": "#f20" }, 60);
+  $('#p-container').animate({ "border-color": "#888" }, 60);
+  $('#p-container').animate({ "border-color": "#f20" }, 60);
+  $('#p-container').animate({ "border-color": "rgba(120, 120, 120, 0.9)" }, 60);
+});
+
+$('#p-container').click(function(e) {
+  e.stopPropagation();
+})
+
+$('#p-cancel').click(function() {
+  $('#popup').hide();
+});
+
+function reserve(day) {
+  // Update these data simultaneously:
+  //   users/<uid>/reserved/time<n>
+  //   users/<uid>/reservedCounter
+  //   <room>/<date>/<time>
+  var data = {};
+  // var day = this.id.slice(3, 9);
+  var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
+  data['users/' + account.firebaseId + '/reserved/time' + (reserveCounter + 1)] = dateRoomString;
+  data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter + 1;
+  data[listenTo + '/' + day] = {
+    name: account.name,
+    id: account.id,
+    count: reserveCounter + 1
+  }
+  firebase.database().ref().update(data, function(error) {
+    if (error) {
+      alert('#錯誤211\n' + error.code + '\n' + error.message);
+    } else {
+      ++reserveCounter;
+      reserveData['time' + reserveCounter] = dateRoomString;
+      alert('成功預定');
+    }
+  });
+}
+
+function cancelReserve(day) {
+  var data = {};
+  //var day = this.id.slice(3, 9);
+  var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
+  // Last data is the data that going to delete.
+  var matchLast = reserveData['time' + reserveCounter] === dateRoomString;
+  if (!matchLast) {
+    var timeN = getKeyByValue(reserveData, dateRoomString);
+    data['users/' + account.firebaseId + '/reserved/' + timeN] = reserveData['time' + reserveCounter];
+    data[listenTo + '/' + reserveData['time' + reserveCounter].slice(9, 15) + '/count'] =
+      parseInt(timeN.slice(4, 5));
+  }
+  data['users/' + account.firebaseId + '/reserved/time' + reserveCounter] = null;
+  data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter - 1;
+  data[listenTo + '/' + day] = null;
+  firebase.database().ref().update(data, function(error) {
+    if (error) {
+      alert('#錯誤221\n' + error.code + '\n' + error.message);
+    } else {
+      if (!matchLast) {
+        var timeN = getKeyByValue(reserveData, dateRoomString);
+        reserveData[timeN] = reserveData['time' + reserveCounter];
+      }
+      reserveData['time' + reserveCounter] = null;
+      --reserveCounter;
+      alert('成功取消');
+    }
+  });
 }
 
 $('.re-li').click(function(e) {
   //getting height and width of the message box
-    // var height = $('#popuup_div').height();
+  //var height = $('#popup').height();
     // var width = $('#popuup_div').width();
     // //calculating offset for displaying popup message
     // leftVal=e.pageX-(width/2)+"px";
     // topVal=e.pageY-(height/2)+"px";
     //show the popup message and hide with fading effect
-    //$('#popuup_div').css({left:leftVal,top:topVal}).show().fadeOut(1500);
+  //$('#popup').show();
+  //$('#p-container').css({ left:e.pageX-108+"px", top:e.pageY-140+"px" });
+  //return;
   if ($(this).text() == '') {
     if (reserveCounter >= 7) {
       alert('預定時段已達上限7次');
       return;
     }
+    var x = e.pageX-118+"px", y = e.pageY-160+"px";
+    var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
+    var message = '預定' + date + ' ' + time + ':00~' + (time + 1) + ':00\n剩餘預定次數:' + (7 - reserveCounter);
+    showPopUp(x, y, '預定確認', message, 'RESERVE', this.id.slice(3, 9));
     // Update these data simultaneously:
     //   users/<uid>/reserved/time<n>
     //   users/<uid>/reservedCounter
     //   <room>/<date>/<time>
-    if (confirm('預定此時間?')) {
-      var data = {};
-      var day = this.id.slice(3, 9);
-      var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
-      data['users/' + account.firebaseId + '/reserved/time' + (reserveCounter + 1)] = dateRoomString;
-      data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter + 1;
-      data[listenTo + '/' + day] = {
-        name: account.name,
-        id: account.id,
-        count: reserveCounter + 1
-      }
-      firebase.database().ref().update(data, function(error) {
-        if (error) {
-          alert('#錯誤211\n' + error.code + '\n' + error.message);
-        } else {
-          ++reserveCounter;
-          reserveData['time' + reserveCounter] = dateRoomString;
-          alert('成功預定');
-        }
-      });
-    }
+    // if (confirm('預定此時間?')) {
+    //   var data = {};
+    //   var day = this.id.slice(3, 9);
+    //   var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
+    //   data['users/' + account.firebaseId + '/reserved/time' + (reserveCounter + 1)] = dateRoomString;
+    //   data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter + 1;
+    //   data[listenTo + '/' + day] = {
+    //     name: account.name,
+    //     id: account.id,
+    //     count: reserveCounter + 1
+    //   }
+    //   firebase.database().ref().update(data, function(error) {
+    //     if (error) {
+    //       alert('#錯誤211\n' + error.code + '\n' + error.message);
+    //     } else {
+    //       ++reserveCounter;
+    //       reserveData['time' + reserveCounter] = dateRoomString;
+    //       alert('成功預定');
+    //     }
+    //   });
+    // }
   } else if ($(this).text() == account.name) {
-    if (confirm('取消預定?')) {
-      var data = {};
-      var day = this.id.slice(3, 9);
-      var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
-      // Last data is the data that going to delete.
-      var matchLast = reserveData['time' + reserveCounter] === dateRoomString;
-      if (!matchLast) {
-        var timeN = getKeyByValue(reserveData, dateRoomString);
-        data['users/' + account.firebaseId + '/reserved/' + timeN] = reserveData['time' + reserveCounter];
-        data[listenTo + '/' + reserveData['time' + reserveCounter].slice(9, 15) + '/count'] =
-          parseInt(timeN.slice(4, 5));
-      }
-      data['users/' + account.firebaseId + '/reserved/time' + reserveCounter] = null;
-      data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter - 1;
-      data[listenTo + '/' + day] = null;
-      firebase.database().ref().update(data, function(error) {
-        if (error) {
-          alert('#錯誤221\n' + error.code + '\n' + error.message);
-        } else {
-          if (!matchLast) {
-            var timeN = getKeyByValue(reserveData, dateRoomString);
-            reserveData[timeN] = reserveData['time' + reserveCounter];
-          }
-          reserveData['time' + reserveCounter] = null;
-          --reserveCounter;
-          alert('成功取消');
-        }
-      });
-    }
+    showPopUp(e.pageX-108+"px", e.pageY-160+"px", '取消', '測試中...(能使用)', 'CANCELRESERVE', this.id.slice(3, 9));
+    // if (confirm('取消預定?')) {
+    //   var data = {};
+    //   var day = this.id.slice(3, 9);
+    //   var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
+    //   // Last data is the data that going to delete.
+    //   var matchLast = reserveData['time' + reserveCounter] === dateRoomString;
+    //   if (!matchLast) {
+    //     var timeN = getKeyByValue(reserveData, dateRoomString);
+    //     data['users/' + account.firebaseId + '/reserved/' + timeN] = reserveData['time' + reserveCounter];
+    //     data[listenTo + '/' + reserveData['time' + reserveCounter].slice(9, 15) + '/count'] =
+    //       parseInt(timeN.slice(4, 5));
+    //   }
+    //   data['users/' + account.firebaseId + '/reserved/time' + reserveCounter] = null;
+    //   data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter - 1;
+    //   data[listenTo + '/' + day] = null;
+    //   firebase.database().ref().update(data, function(error) {
+    //     if (error) {
+    //       alert('#錯誤221\n' + error.code + '\n' + error.message);
+    //     } else {
+    //       if (!matchLast) {
+    //         var timeN = getKeyByValue(reserveData, dateRoomString);
+    //         reserveData[timeN] = reserveData['time' + reserveCounter];
+    //       }
+    //       reserveData['time' + reserveCounter] = null;
+    //       --reserveCounter;
+    //       alert('成功取消');
+    //     }
+    //   });
+    // }
   }
 });
 
