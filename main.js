@@ -221,7 +221,7 @@ $('#re-nextweek').click(function() {
 });
 
 $('.re-room').click(function() {
-  room = parseInt(this.id.slice(11, 12));
+  room = parseInt(this.id.slice(7, 8));
   initDate(false);
   listenToReserveData(false);
 });
@@ -313,93 +313,29 @@ function cancelReserve(day) {
   });
 }
 
-$('#new-account').ready(function() {
-   $('#new-account').css({
-     opacity: "hide",
-     left: "+=400px"
-   });
-   alert('由於測試關係,資料庫已於2/19 21:30重設,在此之前的帳號請重新註冊');
-});
-
 $('.re-li').click(function(e) {
-  //getting height and width of the message box
-  //var height = $('#popup').height();
-    // var width = $('#popuup_div').width();
-    // //calculating offset for displaying popup message
-    // leftVal=e.pageX-(width/2)+"px";
-    // topVal=e.pageY-(height/2)+"px";
-    //show the popup message and hide with fading effect
-  //$('#popup').show();
-  //$('#p-container').css({ left:e.pageX-108+"px", top:e.pageY-140+"px" });
-  //return;
   if ($(this).text() == '') {
     if (reserveCounter >= 7) {
-      alert('預定時段已達上限7次');
+      alert('預訂時段已達上限7次');
       return;
     }
     var x = e.pageX-118+"px", y = e.pageY-160+"px";
     var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
-    var message = '預定' + date + ' ' + time + ':00~' + (time + 1) + ':00\n剩餘預定次數:' + (7 - reserveCounter);
-    showPopUp(x, y, '預定確認', message, 'RESERVE', this.id.slice(3, 9));
-    // Update these data simultaneously:
-    //   users/<uid>/reserved/time<n>
-    //   users/<uid>/reservedCounter
-    //   <room>/<date>/<time>
-    // if (confirm('預定此時間?')) {
-    //   var data = {};
-    //   var day = this.id.slice(3, 9);
-    //   var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
-    //   data['users/' + account.firebaseId + '/reserved/time' + (reserveCounter + 1)] = dateRoomString;
-    //   data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter + 1;
-    //   data[listenTo + '/' + day] = {
-    //     name: account.name,
-    //     id: account.id,
-    //     count: reserveCounter + 1
-    //   }
-    //   firebase.database().ref().update(data, function(error) {
-    //     if (error) {
-    //       alert('#錯誤211\n' + error.code + '\n' + error.message);
-    //     } else {
-    //       ++reserveCounter;
-    //       reserveData['time' + reserveCounter] = dateRoomString;
-    //       alert('成功預定');
-    //     }
-    //   });
-    // }
+    var message = '預訂琴房' + room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00'+
+                  '\n剩餘預定次數:' + (7 - reserveCounter);
+    showPopUp(x, y, '預訂確認', message, 'RESERVE', this.id.slice(3, 9));
   } else if ($(this).text() == account.name) {
-    showPopUp(e.pageX-108+"px", e.pageY-160+"px", '取消', '測試中...(能使用)', 'CANCELRESERVE', this.id.slice(3, 9));
-    // if (confirm('取消預定?')) {
-    //   var data = {};
-    //   var day = this.id.slice(3, 9);
-    //   var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
-    //   // Last data is the data that going to delete.
-    //   var matchLast = reserveData['time' + reserveCounter] === dateRoomString;
-    //   if (!matchLast) {
-    //     var timeN = getKeyByValue(reserveData, dateRoomString);
-    //     data['users/' + account.firebaseId + '/reserved/' + timeN] = reserveData['time' + reserveCounter];
-    //     data[listenTo + '/' + reserveData['time' + reserveCounter].slice(9, 15) + '/count'] =
-    //       parseInt(timeN.slice(4, 5));
-    //   }
-    //   data['users/' + account.firebaseId + '/reserved/time' + reserveCounter] = null;
-    //   data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter - 1;
-    //   data[listenTo + '/' + day] = null;
-    //   firebase.database().ref().update(data, function(error) {
-    //     if (error) {
-    //       alert('#錯誤221\n' + error.code + '\n' + error.message);
-    //     } else {
-    //       if (!matchLast) {
-    //         var timeN = getKeyByValue(reserveData, dateRoomString);
-    //         reserveData[timeN] = reserveData['time' + reserveCounter];
-    //       }
-    //       reserveData['time' + reserveCounter] = null;
-    //       --reserveCounter;
-    //       alert('成功取消');
-    //     }
-    //   });
-    // }
+    var x = e.pageX-118+"px", y = e.pageY-160+"px";
+    var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
+    var message = '取消預訂琴房' + room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00';
+    showPopUp(x, y, '取消確認', message, 'CANCELRESERVE', this.id.slice(3, 9));
   }
 });
 
 $('#tl-user').click(function() {
   alert("User's information testing\n" + account.name + '\n' + account.id + '\n' + account.email);
 });
+
+$(function() {
+  alert('由於測試關係,資料庫已於2/19 21:30重設,在此之前的帳號請重新註冊');
+})

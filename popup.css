@@ -14,9 +14,25 @@
   border-radius: 16px;
   border: 2px solid rgba(120, 120, 120, 0.9);
   height: 120px;
-  padding: 4px 6px;
+  overflow: hidden;
   position: absolute;
   width: 240px;
+}
+
+#p-buttonbar {
+  bottom: 0;
+  position: absolute;
+  right: 0;
+}
+
+#p-container button {
+  float: right;
+}
+
+#p-title {
+  background-color: rgba(200, 200, 200, 0.9);
+  position: relative;
+  width: 100%;
 }
 
 #p-container::after{

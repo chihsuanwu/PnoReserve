@@ -49,25 +49,55 @@ body {
 }
 
 .title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
 }
 
-#login label,
-#new-account label {
+#login-new-account label {
   float: left;
+  font-size: 16px;
   font-weight: bold;
+  height: 36px;
+  line-height: 36px;
   text-align: right;
-  width: 80px;
+  width: 100px;
 }
 
-#login input,
-#new-account input {
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+#login-new-account input {
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   border: 1px solid #aaa;
+  font-size: 16px;
+  height: 26px;
   padding: 4px 6px;
-  width: 200px;
+  width: 220px;
+}
+
+#login-new-account button {
+  background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#bbb));
+  background: -moz-linear-gradient(top, #eee, #bbb);
+  background: linear-gradient(to bottom, #eee, #bbb);
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  color: #111;
+  font-size: 14px;
+  padding: 4px 16px;
+  text-align: center;
+  text-shadow: #666 1px 1px 1px;
+}
+
+#login-new-account button:hover,
+#login-new-account button:focus {
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc));
+  background: -moz-linear-gradient(top, #fff, #ccc);
+  background: linear-gradient(to bottom, #fff, #ccc);
+  border: 1px solid #ccc;
+}
+
+#login-new-account button:active {
+  background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#bbb));
+  background: -moz-linear-gradient(top, #999, #bbb);
+  background: linear-gradient(to bottom, #999, #bbb);
 }
 
 #new-account {
