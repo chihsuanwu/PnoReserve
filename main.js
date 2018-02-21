@@ -339,7 +339,3 @@ $('.re-li').click(function(e) {
 $('#tl-user').click(function() {
   alert("User's information testing\n" + account.name + '\n' + account.id + '\n' + account.email);
 });
-
-$(function() {
-  alert('我辦好了');
-})
