@@ -263,7 +263,7 @@ function reserve(day) {
   //   users/<uid>/reservedCounter
   //   <room>/<date>/<time>
   var data = {};
-  // var day = this.id.slice(3, 9);
+  //                   year month date               day         room
   var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
   data['users/' + account.firebaseId + '/reserved/time' + (reserveCounter + 1)] = dateRoomString;
   data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter + 1;
@@ -285,15 +285,19 @@ function reserve(day) {
 
 function cancelReserve(day) {
   var data = {};
-  //var day = this.id.slice(3, 9);
+  //                   year month date               day         room
   var dateRoomString = listenTo.slice(6, 14) + '-' + day + '-' + listenTo.slice(0, 5);
   // Last data is the data that going to delete.
   var matchLast = reserveData['time' + reserveCounter] === dateRoomString;
   if (!matchLast) {
     var timeN = getKeyByValue(reserveData, dateRoomString);
-    data['users/' + account.firebaseId + '/reserved/' + timeN] = reserveData['time' + reserveCounter];
-    data[listenTo + '/' + reserveData['time' + reserveCounter].slice(9, 15) + '/count'] =
-      parseInt(timeN.slice(4, 5));
+    var changeDRString = reserveData['time' + reserveCounter];
+    data['users/' + account.firebaseId + '/reserved/' + timeN] = changeDRString;
+    var changeRoom = changeDRString.slice(16, 21),
+        changeDate = changeDRString.slice(0, 8),
+        changeDay = changeDRString.slice(9, 15);
+    //   room               year month date    day
+    data[changeRoom + '/' + changeDate + '/' + changeDay + '/count'] = parseInt(timeN.slice(4, 5));
   }
   data['users/' + account.firebaseId + '/reserved/time' + reserveCounter] = null;
   data['users/' + account.firebaseId + '/reservedCounter'] = reserveCounter - 1;
@@ -319,13 +323,13 @@ $('.re-li').click(function(e) {
       alert('預訂時段已達上限7次');
       return;
     }
-    var x = e.pageX-118+"px", y = e.pageY-160+"px";
+    var x = e.pageX-122+"px", y = e.pageY-140+"px";
     var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
     var message = '預訂琴房' + room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00'+
                   '\n剩餘預定次數:' + (7 - reserveCounter);
     showPopUp(x, y, '預訂確認', message, 'RESERVE', this.id.slice(3, 9));
   } else if ($(this).text() == account.name) {
-    var x = e.pageX-118+"px", y = e.pageY-160+"px";
+    var x = e.pageX-122+"px", y = e.pageY-140+"px";
     var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
     var message = '取消預訂琴房' + room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00';
     showPopUp(x, y, '取消確認', message, 'CANCELRESERVE', this.id.slice(3, 9));
