@@ -32,10 +32,13 @@ var listenTo = '';
 
 // Login
 $('#ln-login').click(function() {
+  $('#ln-email-message').text('');
+  $('#ln-password-message').text('');
   var email = $('#ln-email').val();
   var password = $('#ln-password').val();
   if (email.length == 0 || email.trim().length == 0) {
-    alert('請輸入信箱');
+    $('#ln-email-message').text('請輸入信箱');
+    $('#ln-email').focus();
     return;
   }
   $('#loading').show();
@@ -74,7 +77,12 @@ $('#ln-login').click(function() {
     });
   }).catch(function(error) {
     $('#loading').hide();
-    alert('登入失敗\n' + error.code + '\n' + error.message);
+    switch (error.code) {
+      case 'auth/user-not-found': $('#ln-email-message').text('此帳號不存在'); $('#ln-email').focus(); break;
+      case 'auth/invalid-email': $('#ln-email-message').text('信箱格式錯誤'); $('#ln-email').focus(); break;
+      case 'auth/wrong-password': $('#ln-password-message').text('密碼錯誤'); $('#ln-password').focus();  break;
+      default: alert('錯誤#84\n' + error.code + '\n' + error.message);
+    }
   });
 });
 
@@ -157,6 +165,10 @@ function listenToReserveData(nextWeek) {
 
 // Siwtch to new account page.
 $('#ln-new-account').click(function() {
+  $('#ln-email').val('');
+  $('#ln-password').val('');
+  $('#ln-email-message').text('');
+  $('#ln-password-message').text('');
   $('#login').animate({ left: "-=400px" }, 200);
   $('#new-account').animate({ left: "-=400px" }, 200);
 });
@@ -167,23 +179,35 @@ $('#na-back-login').click(function() {
   $('#na-id').val('');
   $('#na-email').val('');
   $('#na-password').val('');
+  $('#na-name-message').text('');
+  $('#na-id-message').text('');
+  $('#na-email-message').text('');
+  $('#na-password-message').text('');
   $('#login').animate({ left: "+=400px" }, 200);
   $('#new-account').animate({ left: "+=400px" }, 200);
 });
 
 // Create new account.
 $('#na-new-account').click(function() {
+  $('#na-name-message').text('');
+  $('#na-id-message').text('');
+  $('#na-email-message').text('');
+  $('#na-password-message').text('');
   name = $('#na-name').val();
   id = $('#na-id').val();
   password = $('#na-password').val();
   email = $('#na-email').val();
 
   if (name.length == 0 || name.trim().length == 0) {
-    alert('請輸入名字');
+    $('#na-name-message').text('請輸入名字');
     return;
   }
   if (id.length == 0 || id.trim().length == 0) {
-    alert('請輸入學號');
+    $('#na-id-message').text('請輸入學號');
+    return;
+  }
+  if (email.length == 0 || email.trim().length == 0) {
+    $('#na-email-message').text('請輸入信箱');
     return;
   }
 
@@ -195,18 +219,25 @@ $('#na-new-account').click(function() {
       if (error) {
         alert('#錯誤171\n' + error.code + '\n' + error.message);
       } else {
+        $('#ln-email').val($('#na-email').val());
         $('#na-name').val('');
         $('#na-id').val('');
         $('#na-email').val('');
         $('#na-password').val('');
         $('#login').animate({ left: "+=400px" }, 200);
         $('#new-account').animate({ left: "+=400px" }, 200);
-        alert('帳號建立成功');
       }
     });
   }).catch(function(error) {
     $('#loading').hide();
-    alert('註冊失敗\n' + error.code + '\n' + error.message);
+    switch (error.code) {
+      //case 'auth/user-not-found': $('#ln-email-message').text('此帳號不存在'); $('#ln-email').focus(); break;
+      case 'auth/invalid-email': $('#na-email-message').text('信箱格式錯誤'); $('#na-email').focus(); break;
+      case 'auth/email-already-in-use': $('#na-email-message').text('信箱已被使用'); $('#na-email').focus(); break;
+      case 'auth/weak-password': $('#na-password-message').text('密碼長度需至少6個字');
+                                 $('#na-password').focus(); break;
+      default: alert('錯誤#84\n' + error.code + '\n' + error.message);
+    }
   });
 });
 

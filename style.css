@@ -33,6 +33,12 @@ body {
 }
 
 #login-new-account {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  user-select: none;
   height: 400px;
   margin: auto;
   overflow: hidden;
@@ -51,6 +57,7 @@ body {
 .title {
   font-size: 28px;
   font-weight: bold;
+  margin: 16px;
 }
 
 #login-new-account label {
@@ -63,6 +70,24 @@ body {
   width: 100px;
 }
 
+#login-new-account .space {
+  display: inline-block;
+  width: 100px;
+}
+
+#login-new-account .message {
+  color: #f20;
+  display: inline-block;
+  font-size: 12px;
+  text-align: left;
+  width: 220px;
+}
+
+.ln-button-container {
+  display: inline-block;
+  width: 220px;
+}
+
 #login-new-account input {
   box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -73,6 +98,19 @@ body {
   width: 220px;
 }
 
+#login-new-account input::-webkit-input-placeholder {
+  color: #bbb;
+}
+#login-new-account input::-moz-placeholder {
+  color: #bbb;
+}
+#login-new-account input:-ms-input-placeholder {
+  color: #bbb;
+}
+#login-new-account input:-moz-placeholder {
+  color: #bbb;
+}
+
 #login-new-account button {
   background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#bbb));
   background: -moz-linear-gradient(top, #eee, #bbb);
@@ -80,7 +118,9 @@ body {
   border: 1px solid #bbb;
   border-radius: 4px;
   color: #111;
+  float: left;
   font-size: 14px;
+  margin-right: 4px;
   padding: 4px 16px;
   text-align: center;
   text-shadow: #666 1px 1px 1px;
