@@ -1,5 +1,5 @@
 #loading {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0);
   bottom: 0;
   display: none;
   left: 0;
@@ -22,7 +22,7 @@
 }
 
 .l-obj {
-  background-color: #f00;
+  background-color: #7ed6ce;
   -moz-border-radius: 50% 50% 50% 50%;
   -webkit-border-radius: 50% 50% 50% 50%;
   border-radius: 50% 50% 50% 50%;

@@ -41,7 +41,9 @@ $('#ln-login').click(function() {
     $('#ln-email').focus();
     return;
   }
-  $('#loading').show();
+  $('#loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
+    'background-color' : 'rgba(0, 0, 0, 0.6)'
+  }, 1000);
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
     // Set last login time.
     firebase.database().ref('users/' + user.uid + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
