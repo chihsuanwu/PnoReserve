@@ -41,7 +41,7 @@ $('#ln-login').click(function() {
     $('#ln-email').focus();
     return;
   }
-  $('#loading').show().animate({
+  $('#loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
     'background-color' : 'rgba(0, 0, 0, 0.6)'
   }, 1000);
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
