@@ -24,7 +24,6 @@ var room = null;
 
 // Datebase listener;
 var listener = null;
-//var listenTo = '';
 var listenData = {};
 
 // Login
@@ -38,14 +37,16 @@ $('#ln-login').click(function() {
     $('#ln-email').focus();
     return;
   }
+  // Loading animate.
   $('#loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
     'background-color' : 'rgba(0, 0, 0, 0.6)'
   }, 1000);
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
     // Set last login time.
-    firebase.database().ref('users/' + user.uid + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
+    firebase.database().ref('users/' + user.uid + '/info/lastLogin')
+                       .set(firebase.database.ServerValue.TIMESTAMP);
     // Get user data.
-    firebase.database().ref('users/' + user.uid).once('value', function(snapshot) {
+    firebase.database().ref('users/' + user.uid + '/info').once('value', function(snapshot) {
       $('#loading').hide();
       var name = snapshot.child('name').val();
       var id = snapshot.child('id').val();
@@ -58,10 +59,11 @@ $('#ln-login').click(function() {
         id: id, name: name,
         email: email
       };
+      /*
       counter = snapshot.child('counter').val();
       snapshot.child('reserved').forEach(function(child) {
         reserveData[child.key] = child.val();
-      });
+      });*/
       var now = new Date(snapshot.child('lastLogin').val());
       loginDate = {
         year: now.getFullYear(),
@@ -144,22 +146,42 @@ function listenToReserveData(nextWeek) {
   date = getOffsetDate(offset);
   var week = (new Date(date.year + '-' + date.month + '-' + date.date + ' 08:00')).getTime();
 
-  var target = room + '/' + week;
   // If date and room not change, return.
-  if (listenData.string == target) return;
+  if (listenData.week === week && listenData.room === room) return;
+
+  // Loading animate.
+  $('#re-loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
+    'background-color' : 'rgba(0, 0, 0, 0.6)'}, 1000);
 
   // Close the old listener and start a new one.
   if (listener != null) listener.off('value');
 
-  listenData.string = target;
   listenData.week = week;
   listenData.room = room;
-  listener = firebase.database().ref(target);
-  $('.re-li').text('');
-  listener.on('value', function(snapshot) {
-    $('.re-li').text('');
-    snapshot.forEach(function(child) {
-      $('#re-' + child.key).text(child.child('name').val());
+  listener = firebase.database().ref(room + '/' + week + '/times');
+  $('.re-th').text('');
+
+  firebase.database().ref('users/' + account.firebaseId + '/reserved/' + week)
+      .once('value', function(snapshot) {
+    if (snapshot.hasChild('count')) {
+      counter = snapshot.child('count').val();
+      snapshot.child('times').forEach(function(child) {
+        reserveData[child.key] = child.val();
+      });
+    } else {
+      counter = 0;
+      reserveData = {};
+    }
+
+    //alert(JSON.stringify(reserveData))
+    listener.on('value', function(snapshot) {
+      $('#re-loading').hide();
+      $('.re-th').text('');
+      listenData.count = 0;
+      snapshot.forEach(function(child) {
+        ++listenData.count;
+        $('#re-' + child.key).text(child.child('name').val());
+      });
     });
   });
 }
@@ -212,10 +234,14 @@ $('#na-new-account').click(function() {
     return;
   }
 
-  $('#loading').show();
+  // Loading animate.
+  $('#loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
+    'background-color' : 'rgba(0, 0, 0, 0.6)'
+  }, 1000);
+
   firebase.auth().createUserWithEmailAndPassword(email, password).then(function(users) {
     // Create account in database.
-    firebase.database().ref('users/' + users.uid).set({ name: name, id: id, counter: 0 }, function(error) {
+    firebase.database().ref('users/' + users.uid + '/info').set({ name: name, id: id }, function(error) {
       $('#loading').hide();
       if (error) {
         alert('#錯誤171\n' + error.code + '\n' + error.message);
@@ -280,39 +306,37 @@ $('#popup').click(function() {
   $('#p-container').animate({ "border-color": "rgba(120, 120, 120, 0.9)" }, 60);
 });
 
-$('#p-container').click(function(e) {
-  e.stopPropagation();
-})
+$('#p-container').click(function(e) { e.stopPropagation(); });
 
-$('#p-cancel').click(function() {
-  $('#popup').hide();
-});
+$('#p-cancel').click(function() { $('#popup').hide(); });
 
 function reserve(time) {
   // Update these data simultaneously:
   //   users/<uid>/reserved/time<n>
-  //   users/<uid>/counter
-  //   <room>/<date>/<time>
+  //   users/<uid>/reserved/count
+  //   <room>/<week>/times/<time>
   var data = {};
-  var inf = {
-    week: listenData.week,
+  var info = {
     time: time,
     room: listenData.room
   };
-  data['users/' + account.firebaseId + '/reserved/' + (counter + 1)] = inf;
-  data['users/' + account.firebaseId + '/counter'] = counter + 1;
-  data[listenData.string + '/' + time] = {
-    name: account.name,
-    id: account.id,
-    count: counter + 1
+  data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/times/' + (counter + 1)] = info;
+  data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/count'] = counter + 1;
+  if (listenData.count === 0) {
+    data[listenData.room + '/' + listenData.week + '/number'] = listenData.week;
   }
+  data[listenData.room + '/' + listenData.week + '/times/' + time] = {
+    name: account.name,
+    count: counter + 1
+  };
+  //alert(JSON.stringify(data));
 
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#錯誤211\n' + error.code + '\n' + error.message);
     } else {
       ++counter;
-      reserveData[counter] = Object.assign({}, inf);
+      reserveData[counter+''] = Object.assign({}, info);
       alert('成功預定');
     }
   });
@@ -320,46 +344,48 @@ function reserve(time) {
 
 function cancelReserve(time) {
   var data = {};
-  var inf = {
-    week: listenData.week,
+  var info = {
     time: time,
     room: listenData.room
   };
   // Last data is the data that going to delete.
-  var matchLast = reserveData[counter].week === inf.week &&
-                  reserveData[counter].time === inf.time &&
-                  reserveData[counter].room === inf.room;
+  var matchLast = reserveData[counter + ''].time === info.time &&
+                  reserveData[counter + ''].room === info.room;
 
-  var changeN, changeInf;
+  var changeN, changeInfo;
   if (!matchLast) {
-    changeN = Object.keys(reserveData).find(key => (reserveData[key].week == inf.week &&
-                                                  reserveData[key].time == inf.time &&
-                                                  reserveData[key].room == inf.room));
-    changeInf = reserveData[counter];
-    data['users/' + account.firebaseId + '/reserved/' + changeN] = Object.assign({}, changeInf);
-    data[changeInf.room + '/' + changeInf.week + '/' + changeInf.time + '/count'] =
+    changeN = Object.keys(reserveData).find(key => (reserveData[key].time == info.time &&
+                                                    reserveData[key].room == info.room));
+    changeInfo = reserveData[counter + ''];
+    data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/times/' + changeN] =
+        Object.assign({}, changeInfo);
+    data[changeInfo.room + '/' + listenData.week + '/times/' + changeInfo.time + '/count'] =
         parseInt(changeN);
   }
+  if (listenData.count === 1) {
+    data[listenData.room + '/' + listenData.week + '/number'] = null;
+  }
+  data[listenData.room + '/' + listenData.week + '/times/' + time] = null;
 
-  data['users/' + account.firebaseId + '/reserved/' + counter] = null;
-  data['users/' + account.firebaseId + '/counter'] = counter - 1;
-  data[listenData.string + '/' + time] = null;
-
+  data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/times/' + counter] = null;
+  data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/count'] =
+    counter - 1 == 0 ? null : counter - 1;
+  //alert(JSON.stringify(data))
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#錯誤221\n' + error.code + '\n' + error.message);
     } else {
       if (!matchLast) {
-        reserveData[changeN] = Object.assign({}, changeInf);
+        reserveData[changeN] = Object.assign({}, changeInfo);
       }
-      reserveData[counter] = null;
+      reserveData[counter + ''] = null;
       --counter;
       alert('成功取消');
     }
   });
 }
 
-$('.re-li').click(function(e) {
+$('.re-th').click(function(e) {
   if ($(this).text() == '') {
     if (counter >= 7) {
       alert('預訂時段已達上限7次');

@@ -1,5 +1,4 @@
 #loading {
-  background-color: rgba(0, 0, 0, 0);
   bottom: 0;
   display: none;
   left: 0;
@@ -9,7 +8,8 @@
   z-index: 10;
 }
 
-#l-center {
+#l-center,
+#rel-center {
   -webkit-animation: l-center .8s infinite;
   animation: l-center .8s infinite;
   height: 60px;
@@ -37,22 +37,26 @@
   margin-right: 0px;
 }
 
-#l-obj-one {
+#l-obj-one,
+#rel-obj-one {
   -webkit-animation: l-obj-one .8s infinite;
   animation: l-obj-one .8s infinite;
 }
 
-#l-obj-two{
+#l-obj-two,
+#rel-obj-two {
   -webkit-animation: l-obj-two .8s infinite;
   animation: l-obj-two .8s infinite;
 }
 
-#l-obj-three{
+#l-obj-three,
+#rel-obj-three {
   -webkit-animation: l-obj-three .8s infinite;
   animation: l-obj-three .8s infinite;
 }
 
-#l-obj-four{
+#l-obj-four,
+#rel-obj-four {
   -webkit-animation: l-obj-four .8s infinite;
   animation: l-obj-four .8s infinite;
 }
