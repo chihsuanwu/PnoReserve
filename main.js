@@ -138,10 +138,6 @@ function listenToReserveData(dayOffset, room) {
     alert('錯誤#104'); return;
   }
 
-  if (room === undefined) {
-    room = listenData.room;
-  }
-
   $('#re-room1').prop('disabled', room == 1);
   $('#re-room2').prop('disabled', room == 2);
   $('#re-room3').prop('disabled', room == 3);
@@ -162,7 +158,7 @@ function listenToReserveData(dayOffset, room) {
   if (listener != null) listener.off('value');
 
   listenData.week = week;
-  //listenData.room = room;
+  listenData.room = room;
   listener = firebase.database().ref(room + '/' + week + '/times');
   $('.re-th').text('');
 
@@ -272,27 +268,34 @@ $('#na-new-account').click(function() {
   });
 });
 
-$('#re-lastweek').click(function() {
-  var offset = 0;
-  if ($('#re-nextweek').is(":disabled")) {
-    offset = 7;
+$('.re-switchweek').click(function() {
+  var offset;
+  switch ($('#re-week').text()) {
+    case '下周': offset = 7; break;
+    case '下下周': offset = 14; break;
+    default: offset = 0;
   }
-  initDate(offset);
-  listenToReserveData(offset);
-});
+  offset += this.id === 're-nextweek' ? 7 : -7;
 
-$('#re-nextweek').click(function() {
-  var offset = 14;
-  if ($('#re-lastweek').is(":disabled")) {
-    offset = 7;
+  var room = 1;
+  if ($('#re-room2').is(":disabled")) {
+    room = 2;
+  } else if ($('#re-room3').is(":disabled")) {
+    room = 3;
   }
+
   initDate(offset);
-  listenToReserveData(offset);
-});
+  listenToReserveData(offset, room);
+})
 
 $('.re-room').click(function() {
-  initDate(0);
-  listenToReserveData(0, parseInt(this.id.slice(7, 8)));
+  var offset;
+  switch ($('#re-week').text()) {
+    case '下周': offset = 7; break;
+    case '下下周': offset = 14; break;
+    default: offset = 0;
+  }
+  listenToReserveData(offset, parseInt(this.id.slice(7, 8)));
 });
 
 function showPopUp(x, y, title, message, status, okArgs) {
@@ -405,13 +408,13 @@ $('.re-th').click(function(e) {
     }
     var x = e.pageX-122+"px", y = e.pageY-140+"px";
     var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
-    var message = '預訂琴房' + room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00'+
+    var message = '預訂琴房' + listenData.room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00'+
                   '\n剩餘預定次數:' + (7 - counter);
     showPopUp(x, y, '預訂確認', message, 'RESERVE', this.id.slice(3, 9));
   } else if ($(this).text() == account.name) {
     var x = e.pageX-122+"px", y = e.pageY-140+"px";
     var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
-    var message = '取消預訂琴房' + room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00';
+    var message = '取消預訂琴房' + listenData.room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00';
     showPopUp(x, y, '取消確認', message, 'CANCELRESERVE', this.id.slice(3, 9));
   }
 });
