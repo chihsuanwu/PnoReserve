@@ -20,7 +20,7 @@ var reserveData = {};
 var counter = 0;
 var loginDate = null;
 
-var room = null;
+//var room = null;
 
 // Datebase listener;
 var listener = null;
@@ -59,11 +59,7 @@ $('#ln-login').click(function() {
         id: id, name: name,
         email: email
       };
-      /*
-      counter = snapshot.child('counter').val();
-      snapshot.child('reserved').forEach(function(child) {
-        reserveData[child.key] = child.val();
-      });*/
+
       var now = new Date(snapshot.child('lastLogin').val());
       loginDate = {
         year: now.getFullYear(),
@@ -72,9 +68,9 @@ $('#ln-login').click(function() {
         week: now.getDay()
       };
       // Init reserve table.
-      initDate(false);
-      room = 1;
-      listenToReserveData(false);
+      initDate(0);
+      //room = 1;
+      listenToReserveData(0, 1);
     });
   }).catch(function(error) {
     $('#loading').hide();
@@ -82,7 +78,7 @@ $('#ln-login').click(function() {
       case 'auth/user-not-found': $('#ln-email-message').text('此帳號不存在'); $('#ln-email').focus(); break;
       case 'auth/invalid-email': $('#ln-email-message').text('信箱格式錯誤'); $('#ln-email').focus(); break;
       case 'auth/wrong-password': $('#ln-password-message').text('密碼錯誤'); $('#ln-password').focus();  break;
-      default: alert('錯誤#84\n' + error.code + '\n' + error.message);
+      default: alert('錯誤#81\n' + error.code + '\n' + error.message);
     }
   });
 });
@@ -111,18 +107,24 @@ function getOffsetDate(offset) {
   return { year: year, date: ('0' + date).slice(-2), month: ('0' + ++month).slice(-2) };
 }
 
-// Initialize the date of thisWeek or nextWeek(according to boolean arg 'nextWeek').
-function initDate(nextWeek) {
-  if (loginDate == null) alert('錯誤#77');
+// Initialize the date according to 'dayOffset'(0 for this week, 7 for next week, 14 for next next week).
+function initDate(dayOffset) {
+  if (loginDate == null) {
+    alert('錯誤#112'); return;
+  }
 
-  $('#re-nextweek').prop('disabled', nextWeek);
-  $('#re-lastweek').prop('disabled', !nextWeek);
-  $('#re-week').text(nextWeek ? '下周' : '本周');
+  $('#re-nextweek').prop('disabled', dayOffset === 14);
+  $('#re-lastweek').prop('disabled', dayOffset === 0);
+  switch (dayOffset) {
+    case 0: $('#re-week').text('本周'); break;
+    case 7: $('#re-week').text('下周'); break;
+    case 14: $('#re-week').text('下下周'); break;
+    default: alert('錯誤#120');
+  }
 
   // Display the week.
   for (var i = 0; i < 7; ++i) {
-    var offset = i - loginDate.week;
-    if (nextWeek) offset += 7;
+    var offset = i - loginDate.week + dayOffset;
     var offsetDate = getOffsetDate(offset);
 
     var dateString = offsetDate.month + '-' + offsetDate.date;
@@ -130,10 +132,14 @@ function initDate(nextWeek) {
   }
 }
 
-function listenToReserveData(nextWeek) {
-  if (loginDate == null || room == null) {
-    alert('錯誤#104');
-    return;
+// Listen to firebase.
+function listenToReserveData(dayOffset, room) {
+  if (loginDate == null) {
+    alert('錯誤#104'); return;
+  }
+
+  if (room === undefined) {
+    room = listenData.room;
   }
 
   $('#re-room1').prop('disabled', room == 1);
@@ -141,8 +147,7 @@ function listenToReserveData(nextWeek) {
   $('#re-room3').prop('disabled', room == 3);
 
   // Get the date string that going to recive.
-  var offset = -loginDate.week;
-  if (nextWeek) offset += 7;
+  var offset = -loginDate.week + dayOffset;
   date = getOffsetDate(offset);
   var week = (new Date(date.year + '-' + date.month + '-' + date.date + ' 08:00')).getTime();
 
@@ -157,7 +162,7 @@ function listenToReserveData(nextWeek) {
   if (listener != null) listener.off('value');
 
   listenData.week = week;
-  listenData.room = room;
+  //listenData.room = room;
   listener = firebase.database().ref(room + '/' + week + '/times');
   $('.re-th').text('');
 
@@ -268,19 +273,26 @@ $('#na-new-account').click(function() {
 });
 
 $('#re-lastweek').click(function() {
-  initDate(false);
-  listenToReserveData(false);
+  var offset = 0;
+  if ($('#re-nextweek').is(":disabled")) {
+    offset = 7;
+  }
+  initDate(offset);
+  listenToReserveData(offset);
 });
 
 $('#re-nextweek').click(function() {
-  initDate(true);
-  listenToReserveData(true);
+  var offset = 14;
+  if ($('#re-lastweek').is(":disabled")) {
+    offset = 7;
+  }
+  initDate(offset);
+  listenToReserveData(offset);
 });
 
 $('.re-room').click(function() {
-  room = parseInt(this.id.slice(7, 8));
-  initDate(false);
-  listenToReserveData(false);
+  initDate(0);
+  listenToReserveData(0, parseInt(this.id.slice(7, 8)));
 });
 
 function showPopUp(x, y, title, message, status, okArgs) {

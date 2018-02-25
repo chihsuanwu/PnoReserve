@@ -8,6 +8,15 @@
   z-index: 10;
 }
 
+#re-loading {
+  display: none;
+  position: absolute;
+  margin: 72px 0 0 16.25%;
+  width: 78.75%;
+  height: 504px;
+  z-index: 10;
+}
+
 #l-center,
 #rel-center {
   -webkit-animation: l-center .8s infinite;

@@ -50,7 +50,7 @@ body {
 #new-account {
   position: absolute;
   margin: 0 auto;
-  padding: 20px;
+  padding: 16px;
   width: 360px;
 }
 
@@ -70,21 +70,19 @@ body {
   width: 100px;
 }
 
-#login-new-account .space {
-  display: inline-block;
-  width: 100px;
-}
-
 #login-new-account .message {
   color: #f20;
   display: inline-block;
   font-size: 12px;
+  height: 20px;
+  margin-left: 100px;
   text-align: left;
   width: 220px;
 }
 
 .ln-button-container {
   display: inline-block;
+  margin-left: 100px;
   width: 220px;
 }
 
@@ -154,15 +152,6 @@ body {
   margin: 0 5%;
   top: 0;
   width: 90%;
-}
-
-#re-loading {
-  display: none;
-  position: absolute;
-  margin: 72px 0 0 16.25%;
-  width: 78.75%;
-  height: 504px;
-  z-index: 10;
 }
 
 #re-table th {
