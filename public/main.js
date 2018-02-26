@@ -80,8 +80,8 @@ $('#ln-login').click(function() {
     $('#loading').hide();
     switch (error.code) {
       case 'auth/user-not-found': $('#ln-email-message').text('此帳號不存在'); $('#ln-email').focus(); break;
-      case 'auth/invalid-email': $('#ln-email-message').text('信箱格式Error'); $('#ln-email').focus(); break;
-      case 'auth/wrong-password': $('#ln-password-message').text('密碼Error'); $('#ln-password').focus();  break;
+      case 'auth/invalid-email': $('#ln-email-message').text('信箱格式錯誤'); $('#ln-email').focus(); break;
+      case 'auth/wrong-password': $('#ln-password-message').text('密碼錯誤'); $('#ln-password').focus();  break;
       default: alert('Error#81\n' + error.code + '\n' + error.message);
     }
   });
@@ -120,9 +120,9 @@ function initDate(dayOffset) {
   $('#re-nextweek').prop('disabled', dayOffset === 14);
   $('#re-lastweek').prop('disabled', dayOffset === 0);
   switch (dayOffset) {
-    case 0: $('#re-week').text('本周'); break;
-    case 7: $('#re-week').text('下周'); break;
-    case 14: $('#re-week').text('下下周'); break;
+    case 0: $('#re-week').text('本週'); break;
+    case 7: $('#re-week').text('下週'); break;
+    case 14: $('#re-week').text('下下週'); break;
     default: alert('Error#120');
   }
 
@@ -270,13 +270,14 @@ $('#na-new-account').click(function() {
 });
 
 $('.re-switchweek').click(function() {
-  var offset;
+  var offset = (this.id === 're-nextweek' ? 7 : -7);
+
   switch ($('#re-week').text()) {
-    case '下周': offset = 7; break;
-    case '下下周': offset = 14; break;
-    default: offset = 0;
+    case '本週': break;
+    case '下週': offset += 7; break;
+    case '下下週': offset += 14; break;
+    default: alert('Error#279');
   }
-  offset += this.id === 're-nextweek' ? 7 : -7;
 
   var room = 1;
   if ($('#re-room2').is(":disabled")) {
@@ -292,8 +293,8 @@ $('.re-switchweek').click(function() {
 $('.re-room').click(function() {
   var offset;
   switch ($('#re-week').text()) {
-    case '下周': offset = 7; break;
-    case '下下周': offset = 14; break;
+    case '下週': offset = 7; break;
+    case '下下週': offset = 14; break;
     default: offset = 0;
   }
   listenToReserveData(offset, parseInt(this.id.slice(7, 8)));
@@ -347,13 +348,17 @@ function reserve(time) {
   };
   //alert(JSON.stringify(data));
 
+  // Loading animate.
+  $('#re-loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
+    'background-color' : 'rgba(0, 0, 0, 0.6)'
+  }, 1000);
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#Error211\n' + error.code + '\n' + error.message);
     } else {
       ++counter;
       reserveData[counter+''] = Object.assign({}, info);
-      alert('成功預定');
+      $('#re-loading').hide();
     }
   });
 }
@@ -387,6 +392,11 @@ function cancelReserve(time) {
   data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/count'] =
     counter - 1 == 0 ? null : counter - 1;
   //alert(JSON.stringify(data))
+
+  // Loading animate.
+  $('#re-loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
+    'background-color' : 'rgba(0, 0, 0, 0.6)'
+  }, 1000);
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#Error221\n' + error.code + '\n' + error.message);
@@ -396,12 +406,15 @@ function cancelReserve(time) {
       }
       reserveData[counter + ''] = null;
       --counter;
-      alert('成功取消');
+      $('#re-loading').hide();
     }
   });
 }
 
 $('.re-th').click(function(e) {
+  if ($('#re-week').text() === '本週') {
+    return;
+  }
   if ($(this).text() == '') {
     if (counter >= 7) {
       alert('預訂時段已達上限7次');

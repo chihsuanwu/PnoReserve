@@ -154,7 +154,7 @@ body {
 #re-table {
   border-collapse: collapse;
   position: absolute;
-  margin: 0 5%;
+  margin: 0 5% 36px 5%;
   top: 0;
   width: 90%;
 }
