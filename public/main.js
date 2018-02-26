@@ -218,21 +218,30 @@ $('#na-new-account').click(function() {
   $('#na-id-message').text('');
   $('#na-email-message').text('');
   $('#na-password-message').text('');
-  name = $('#na-name').val();
-  id = $('#na-id').val();
-  password = $('#na-password').val();
-  email = $('#na-email').val();
+  var name = $('#na-name').val();
+  var id = $('#na-id').val();
+  var card = $('#na-card').val();
+  var password = $('#na-password').val();
+  var email = $('#na-email').val();
 
   if (name.length == 0 || name.trim().length == 0) {
     $('#na-name-message').text('請輸入名字');
+    $('#na-name').focus();
     return;
   }
   if (id.length == 0 || id.trim().length == 0) {
     $('#na-id-message').text('請輸入學號');
+    $('#na-id').focus();
+    return;
+  }
+  if (card.length == 0 || card.trim().length == 0) {
+    $('#na-card-message').text('請輸入磁卡編號');
+    $('#na-card').focus();
     return;
   }
   if (email.length == 0 || email.trim().length == 0) {
     $('#na-email-message').text('請輸入信箱');
+    $('#na-email').focus();
     return;
   }
 

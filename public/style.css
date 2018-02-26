@@ -4,6 +4,7 @@
 }
 
 body {
+  margin: 0;
   background-color: #eee;
 }
 
@@ -42,7 +43,7 @@ body {
   -moz-user-select: -moz-none;
   -ms-user-select: none;
   user-select: none;
-  height: 400px;
+  height: 600px;
   margin: auto;
   overflow: hidden;
   position: relative;
