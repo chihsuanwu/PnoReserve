@@ -10,26 +10,29 @@ body {
 .headtitle {
   color: white;
   font-size: 30px;
-  font-weight:bold;
+  font-weight: bold;
   text-align: center;
   float: center;
-  background-color:#003344;
+  background-color: #034;
   padding: 15px
 }
 
-#tool {
-  height: 48px;
-}
-
-#tl-user {
-  font-size: 24px;
-  line-height: 24px;
-  float: right;
+#user {
+  display: none;
+  font-size: 18px;
+  line-height: 18px;
+  height: 30px;
+  width: 128px;
+  position: absolute;
+  margin-top: 30px;
+  right: 0;
 }
 
 #time {
-  font-size: 20px;
-  float: right;
+  font-size: 18px;
+  position: absolute;
+
+  right: 0;
 }
 
 #login-new-account {
@@ -143,6 +146,7 @@ body {
 }
 
 #reserve {
+  margin-top: 72px;
   display: none;
 }
 

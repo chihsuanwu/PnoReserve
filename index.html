@@ -7,6 +7,7 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanstc.css">
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="account.css">
   <link rel="stylesheet" type="text/css" href="loading.css">
   <link rel="stylesheet" type="text/css" href="popup.css">
   <title>TESTING...</title>
@@ -24,16 +25,23 @@
     <div id="p-container">
       <div id="p-title">預定此時間?</div>
       <div id="p-message">訊息...</div>
-      <div id="p-buttonbar">
+      <div id="p-button-container">
         <button id="p-cancel">取消</button>
         <button id="p-ok">確定</button>
       </div>
     </div>
   </div>
   <div class="headtitle">🎹國立成功大學鋼琴社 NCKU Piano Club🎹</div>
+
   <div id="time"></div>
-  <div id="tool">
-    <button id="tl-user"></button>
+  <button id="user"></button>
+  <div id="account">
+    <div id="ac-name">NAME</div>
+    <div id="ac-email">EMAIL</div>
+    <div id="ac-button-container">
+      <button id="ac-change-password">更改密碼</button>
+      <button id="ac-logout">登出</button>
+    </div>
   </div>
 
   <div id="login-new-account">
@@ -73,6 +81,7 @@
       </div>
     </form>
   </div>
+
 
 
   <!-- reserve page -->

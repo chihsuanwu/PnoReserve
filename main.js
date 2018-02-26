@@ -53,7 +53,7 @@ $('#ln-login').click(function() {
       $('#login-new-account').hide();
       $('#loading').hide();
       $('#reserve').show();
-      $('#tl-user').text(name);
+      $('#user').text(name);
       account = {
         firebaseId: user.uid,
         id: id, name: name,
@@ -67,6 +67,7 @@ $('#ln-login').click(function() {
         date: now.getDate(),
         week: now.getDay()
       };
+      $('#user').show();
       // Init reserve table.
       initDate(0);
       //room = 1;
@@ -76,9 +77,9 @@ $('#ln-login').click(function() {
     $('#loading').hide();
     switch (error.code) {
       case 'auth/user-not-found': $('#ln-email-message').text('此帳號不存在'); $('#ln-email').focus(); break;
-      case 'auth/invalid-email': $('#ln-email-message').text('信箱格式錯誤'); $('#ln-email').focus(); break;
-      case 'auth/wrong-password': $('#ln-password-message').text('密碼錯誤'); $('#ln-password').focus();  break;
-      default: alert('錯誤#81\n' + error.code + '\n' + error.message);
+      case 'auth/invalid-email': $('#ln-email-message').text('信箱格式Error'); $('#ln-email').focus(); break;
+      case 'auth/wrong-password': $('#ln-password-message').text('密碼Error'); $('#ln-password').focus();  break;
+      default: alert('Error#81\n' + error.code + '\n' + error.message);
     }
   });
 });
@@ -110,7 +111,7 @@ function getOffsetDate(offset) {
 // Initialize the date according to 'dayOffset'(0 for this week, 7 for next week, 14 for next next week).
 function initDate(dayOffset) {
   if (loginDate == null) {
-    alert('錯誤#112'); return;
+    alert('Error#112'); return;
   }
 
   $('#re-nextweek').prop('disabled', dayOffset === 14);
@@ -119,7 +120,7 @@ function initDate(dayOffset) {
     case 0: $('#re-week').text('本周'); break;
     case 7: $('#re-week').text('下周'); break;
     case 14: $('#re-week').text('下下周'); break;
-    default: alert('錯誤#120');
+    default: alert('Error#120');
   }
 
   // Display the week.
@@ -135,7 +136,7 @@ function initDate(dayOffset) {
 // Listen to firebase.
 function listenToReserveData(dayOffset, room) {
   if (loginDate == null) {
-    alert('錯誤#104'); return;
+    alert('Error#104'); return;
   }
 
   $('#re-room1').prop('disabled', room == 1);
@@ -245,7 +246,7 @@ $('#na-new-account').click(function() {
     firebase.database().ref('users/' + users.uid + '/info').set({ name: name, id: id }, function(error) {
       $('#loading').hide();
       if (error) {
-        alert('#錯誤171\n' + error.code + '\n' + error.message);
+        alert('#Error171\n' + error.code + '\n' + error.message);
       } else {
         $('#ln-email').val($('#na-email').val());
         $('#na-name').val('');
@@ -259,11 +260,11 @@ $('#na-new-account').click(function() {
   }).catch(function(error) {
     $('#loading').hide();
     switch (error.code) {
-      case 'auth/invalid-email': $('#na-email-message').text('信箱格式錯誤'); $('#na-email').focus(); break;
+      case 'auth/invalid-email': $('#na-email-message').text('信箱格式Error'); $('#na-email').focus(); break;
       case 'auth/email-already-in-use': $('#na-email-message').text('信箱已被使用'); $('#na-email').focus(); break;
       case 'auth/weak-password': $('#na-password-message').text('密碼長度需至少6個字');
                                  $('#na-password').focus(); break;
-      default: alert('錯誤#84\n' + error.code + '\n' + error.message);
+      default: alert('Error#84\n' + error.code + '\n' + error.message);
     }
   });
 });
@@ -306,7 +307,7 @@ function showPopUp(x, y, title, message, status, okArgs) {
     switch (status) {
       case 'RESERVE': reserve(okArgs); break;
       case 'CANCELRESERVE': cancelReserve(okArgs); break;
-      default: alert('#錯誤');
+      default: alert('Error#310');
     }
     $('#popup').hide();
   });
@@ -348,7 +349,7 @@ function reserve(time) {
 
   firebase.database().ref().update(data, function(error) {
     if (error) {
-      alert('#錯誤211\n' + error.code + '\n' + error.message);
+      alert('#Error211\n' + error.code + '\n' + error.message);
     } else {
       ++counter;
       reserveData[counter+''] = Object.assign({}, info);
@@ -388,7 +389,7 @@ function cancelReserve(time) {
   //alert(JSON.stringify(data))
   firebase.database().ref().update(data, function(error) {
     if (error) {
-      alert('#錯誤221\n' + error.code + '\n' + error.message);
+      alert('#Error221\n' + error.code + '\n' + error.message);
     } else {
       if (!matchLast) {
         reserveData[changeN] = Object.assign({}, changeInfo);
@@ -419,8 +420,30 @@ $('.re-th').click(function(e) {
   }
 });
 
-$('#tl-user').click(function() {
-  alert("User's information testing\n" + account.name + '\n' + account.id + '\n' + account.email);
+$('#user').click(function() {
+  $('#account').show();
+  $('#ac-name').text(account.name);
+  $('#ac-email').text(account.email);
+});
+
+$('#ac-logout').click(function() {
+  $('#loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
+    'background-color' : 'rgba(0, 0, 0, 0.6)'
+  }, 1000);
+  firebase.auth().signOut().then(function() {
+    $('#loading').hide();
+    $('#reserve').hide();
+    $('#user').hide();
+    $('#account').hide();
+    $('#login-new-account').show();
+    if (listener != null) {
+      listener.off('value');
+      listenData = {};
+    }
+  }, function(error) {
+    $('#loading').hide();
+    alert('Error#431');
+  });
 });
 
 $(function() {

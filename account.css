@@ -1,0 +1,40 @@
+
+#account {
+  box-shadow: 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  display: none;
+  float: right;
+  height: 160px;
+  position: absolute;
+  right: 0;
+  margin-top: 76px;
+  margin-right: 4px;
+  padding: 0 20px;
+  width: 240px;
+  z-index: 5;
+}
+
+#account::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -16px;
+  width: 0;
+  height: 0;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-bottom: 16px solid #fff;
+  clear: both;
+}
+
+#ac-button-container {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+#ac-button-container button {
+  margin: 2px;
+  float: right;
+}
