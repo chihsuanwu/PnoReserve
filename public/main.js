@@ -50,13 +50,16 @@ $('#ln-login').click(function() {
       $('#loading').hide();
       var name = snapshot.child('name').val();
       var id = snapshot.child('id').val();
+      var card = snapshot.child('card').val();
       $('#login-new-account').hide();
       $('#loading').hide();
       $('#reserve').show();
       $('#user').text(name);
       account = {
         firebaseId: user.uid,
-        id: id, name: name,
+        id: id,
+        name: name,
+        card: card,
         email: email
       };
 
@@ -190,34 +193,23 @@ function listenToReserveData(dayOffset, room) {
 
 // Siwtch to new account page.
 $('#ln-new-account').click(function() {
-  $('#ln-email').val('');
-  $('#ln-password').val('');
-  $('#ln-email-message').text('');
-  $('#ln-password-message').text('');
+  $('#login input').val('');
+  $('#login .message').text('');
   $('#login').animate({ left: "-=400px" }, 200);
   $('#new-account').animate({ left: "-=400px" }, 200);
 });
 
 // Switch to login page
 $('#na-back-login').click(function() {
-  $('#na-name').val('');
-  $('#na-id').val('');
-  $('#na-email').val('');
-  $('#na-password').val('');
-  $('#na-name-message').text('');
-  $('#na-id-message').text('');
-  $('#na-email-message').text('');
-  $('#na-password-message').text('');
+  $('#new-account input').val('');
+  $('#new-account .message').text('');
   $('#login').animate({ left: "+=400px" }, 200);
   $('#new-account').animate({ left: "+=400px" }, 200);
 });
 
 // Create new account.
 $('#na-new-account').click(function() {
-  $('#na-name-message').text('');
-  $('#na-id-message').text('');
-  $('#na-email-message').text('');
-  $('#na-password-message').text('');
+  $('.message').text('');
   var name = $('#na-name').val();
   var id = $('#na-id').val();
   var card = $('#na-card').val();
@@ -252,16 +244,15 @@ $('#na-new-account').click(function() {
 
   firebase.auth().createUserWithEmailAndPassword(email, password).then(function(users) {
     // Create account in database.
-    firebase.database().ref('users/' + users.uid + '/info').set({ name: name, id: id }, function(error) {
+    firebase.database().ref('users/' + users.uid + '/info').set({
+      name: name, id: id, card: card
+    }, function(error) {
       $('#loading').hide();
       if (error) {
         alert('#Error171\n' + error.code + '\n' + error.message);
       } else {
         $('#ln-email').val($('#na-email').val());
-        $('#na-name').val('');
-        $('#na-id').val('');
-        $('#na-email').val('');
-        $('#na-password').val('');
+        $('#new-account input').val('');
         $('#login').animate({ left: "+=400px" }, 200);
         $('#new-account').animate({ left: "+=400px" }, 200);
       }
@@ -269,7 +260,7 @@ $('#na-new-account').click(function() {
   }).catch(function(error) {
     $('#loading').hide();
     switch (error.code) {
-      case 'auth/invalid-email': $('#na-email-message').text('信箱格式Error'); $('#na-email').focus(); break;
+      case 'auth/invalid-email': $('#na-email-message').text('信箱格式錯誤'); $('#na-email').focus(); break;
       case 'auth/email-already-in-use': $('#na-email-message').text('信箱已被使用'); $('#na-email').focus(); break;
       case 'auth/weak-password': $('#na-password-message').text('密碼長度需至少6個字');
                                  $('#na-password').focus(); break;
