@@ -13,8 +13,6 @@ $('#time').ready(function() {
 // Firebase data.
 var database = firebase.database();
 
-var weekArray = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
-
 var account = {};
 var reserveData = {};
 var counter = 0;
@@ -126,8 +124,10 @@ function initDate(dayOffset) {
     default: alert('Error#120');
   }
 
+  var weekArray = new Array('', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
+
   // Display the week.
-  for (var i = 0; i < 7; ++i) {
+  for (var i = 1; i < 8; ++i) {
     var offset = i - loginDate.week + dayOffset;
     var offsetDate = getOffsetDate(offset);
 
@@ -155,7 +155,7 @@ function listenToReserveData(dayOffset, room) {
   if (listenData.week === week && listenData.room === room) return;
 
   // Loading animate.
-  $('#re-loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
+  $('#re-loading').finish().css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
     'background-color' : 'rgba(0, 0, 0, 0.6)'}, 1000);
 
   // Close the old listener and start a new one.
@@ -300,9 +300,10 @@ $('.re-room').click(function() {
   listenToReserveData(offset, parseInt(this.id.slice(7, 8)));
 });
 
-function showPopUp(x, y, title, message, status, okArgs) {
+function showPopUp(x, y, title, message1, message2, status, okArgs) {
   $('#p-title').text(title);
-  $('#p-message').text(message);
+  $('#p-message1').text(message1);
+  $('#p-message2').text(message2);
   $('#p-ok').off('click');
   $('#p-ok').click(function() {
     switch (status) {
@@ -324,6 +325,10 @@ $('#popup').click(function() {
 });
 
 $('#p-container').click(function(e) { e.stopPropagation(); });
+
+$('#account').click(function(e) { e.stopPropagation(); });
+
+$('body').click(function() { $('#account').hide(); });
 
 $('#p-cancel').click(function() { $('#popup').hide(); });
 
@@ -422,18 +427,19 @@ $('.re-th').click(function(e) {
     }
     var x = e.pageX-122+"px", y = e.pageY-140+"px";
     var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
-    var message = '預訂琴房' + listenData.room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00'+
-                  '\n剩餘預定次數:' + (7 - counter);
-    showPopUp(x, y, '預訂確認', message, 'RESERVE', this.id.slice(3, 9));
+    var message1 = '預訂琴房' + listenData.room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00',
+        message2 = '剩餘預定次數:' + (7 - counter);
+    showPopUp(x, y, '預訂確認', message1, message2, 'RESERVE', this.id.slice(3, 9));
   } else if ($(this).text() == account.name) {
     var x = e.pageX-122+"px", y = e.pageY-140+"px";
     var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
     var message = '取消預訂琴房' + listenData.room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00';
-    showPopUp(x, y, '取消確認', message, 'CANCELRESERVE', this.id.slice(3, 9));
+    showPopUp(x, y, '取消確認', message, '', 'CANCELRESERVE', this.id.slice(3, 9));
   }
 });
 
-$('#user').click(function() {
+$('#user').click(function(e) {
+  e.stopPropagation();
   $('#account').show();
   $('#ac-name').text(account.name);
   $('#ac-email').text(account.email);
