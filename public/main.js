@@ -149,7 +149,7 @@ function listenToReserveData(dayOffset, room) {
   // Get the date string that going to recive.
   var offset = -loginDate.week + dayOffset;
   date = getOffsetDate(offset);
-  var week = (new Date(date.year + '-' + date.month + '-' + date.date + ' 08:00')).getTime();
+  var week = (new Date(date.year + '/' + date.month + '/' + date.date + ' 08:00')).getTime();
 
   // If date and room not change, return.
   if (listenData.week === week && listenData.room === room) return;
