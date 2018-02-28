@@ -375,6 +375,7 @@ function reserve(time) {
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#Error211\n' + error.code + '\n' + error.message);
+      $('#re-loading').hide();
     } else {
       alert('預訂成功');
       ++counter;
@@ -421,6 +422,7 @@ function cancelReserve(time) {
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#Error221\n' + error.code + '\n' + error.message);
+      $('#re-loading').hide();
     } else {
       alert('取消成功');
       if (!matchLast) {
