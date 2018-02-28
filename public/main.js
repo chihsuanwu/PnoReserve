@@ -32,8 +32,6 @@ var reserveData = {};
 var counter = 0;
 var loginDate = null;
 
-//var room = null;
-
 // Datebase listener;
 var listener = null;
 var listenData = {};
@@ -81,7 +79,8 @@ $('#ln-login').click(function() {
         year: now.getFullYear(),
         month: now.getMonth(),
         date: now.getDate(),
-        week: now.getDay()
+        hour: now.getHours(),
+        day: now.getDay()
       };
       $('#user').show();
       // Init reserve table.
@@ -130,7 +129,8 @@ function initDate(dayOffset) {
     alert('Error#112'); return;
   }
 
-  $('#re-nextweek').prop('disabled', dayOffset === 14);
+  $('#re-nextweek').prop('disabled', dayOffset === 14 ||
+    (dayOffset === 7 && loginDate.day === 0 && loginDate.hour < 8));
   $('#re-lastweek').prop('disabled', dayOffset === 0);
   switch (dayOffset) {
     case 0: $('#re-week').text('本週'); break;
@@ -143,7 +143,7 @@ function initDate(dayOffset) {
 
   // Display the week.
   for (var i = 1; i < 8; ++i) {
-    var offset = i - loginDate.week + dayOffset;
+    var offset = i - loginDate.day + dayOffset;
     var offsetDate = getOffsetDate(offset);
 
     var dateString = offsetDate.month + '-' + offsetDate.date;
@@ -162,7 +162,7 @@ function listenToReserveData(dayOffset, room) {
   $('#re-room3').prop('disabled', room == 3);
 
   // Get the date string that going to recive.
-  var offset = -loginDate.week + dayOffset;
+  var offset = -loginDate.day + dayOffset;
   date = getOffsetDate(offset);
   var week = (new Date(date.year + '/' + date.month + '/' + date.date + ' 08:00')).getTime();
 
@@ -376,6 +376,7 @@ function reserve(time) {
     if (error) {
       alert('#Error211\n' + error.code + '\n' + error.message);
     } else {
+      alert('預訂成功');
       ++counter;
       reserveData[counter+''] = Object.assign({}, info);
       $('#re-loading').hide();
@@ -421,6 +422,7 @@ function cancelReserve(time) {
     if (error) {
       alert('#Error221\n' + error.code + '\n' + error.message);
     } else {
+      alert('取消成功');
       if (!matchLast) {
         reserveData[changeN] = Object.assign({}, changeInfo);
       }
@@ -432,6 +434,9 @@ function cancelReserve(time) {
 }
 
 $('.re-th').click(function(e) {
+  if (loginDate.day === 0 && loginDate.hour < 8) {
+    return;
+  }
   if ($('#re-week').text() === '本週') {
     return;
   }
@@ -483,6 +488,30 @@ $('#ac-logout').click(function() {
     $('#loading').hide();
     alert('Error#431');
   });
+});
+
+$('#ac-change-password').click(function() {
+  var newPassword = prompt("輸入新密碼");
+
+
+  if (newPassword != null) {
+    var user = firebase.auth().currentUser;
+
+    // Loading animate.
+    $('#loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
+      'background-color' : 'rgba(0, 0, 0, 0.6)'
+    }, 1000);
+    user.updatePassword(newPassword).then(function() {
+      $('#loading').hide();
+      alert('密碼更改成功');
+    }).catch(function(error) {
+      $('#loading').hide();
+      switch (error.code) {
+        case 'auth/weak-password': alert('更改失敗,密碼長度需至少6個字'); break;
+        default: alert('Error#509\n' + error.code + '\n' + error.message);
+      }
+    });
+  }
 });
 
 $(function() {
