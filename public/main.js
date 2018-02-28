@@ -1,14 +1,28 @@
-function updateTime() {
-  var nowDate = new Date();
-  var d = nowDate.getDay();
-  var dayNames = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
-  $('#time').text(nowDate.toLocaleString() + '(' + dayNames[d] + ')');
-  setTimeout('updateTime()', 1000);
+function updateTime(now) {
+  now += 1000;
+  var date = new Date();
+  if (timeOffset != 0) {
+    date.setTime(date.getTime() + timeOffset);
+  }
+
+  var d = date.getDay();
+  var day = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+  $('#time').text(date.toLocaleString() + '(' + day[d] + ')');
+  timer = setTimeout(function(){ updateTime(now); }, 1000);
 }
 
-$('#time').ready(function() {
-  updateTime();
-});
+function setTime(time) {
+  var now = (new Date()).getTime();
+  if (now - time > 60000 && now - time < -60000) {
+    timeOffset = now - time;
+  } else {
+    timeOffset = 0;
+  }
+  updateTime(now);
+}
+
+var timer = null;
+var timeOffset = 0;
 
 // Firebase data.
 var database = firebase.database();
@@ -53,6 +67,7 @@ $('#ln-login').click(function() {
       $('#loading').hide();
       $('#reserve').show();
       $('#user').text(name);
+      setTime(snapshot.child('lastLogin').val());
       account = {
         firebaseId: user.uid,
         id: id,
@@ -445,15 +460,20 @@ $('#user').click(function(e) {
   $('#ac-email').text(account.email);
 });
 
+// Logout.
 $('#ac-logout').click(function() {
+  // Loading animate.
   $('#loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
     'background-color' : 'rgba(0, 0, 0, 0.6)'
   }, 1000);
+
   firebase.auth().signOut().then(function() {
     $('#loading').hide();
     $('#reserve').hide();
     $('#user').hide();
     $('#account').hide();
+    clearTimeout(timer);
+    $('#time').text('');
     $('#login-new-account').show();
     if (listener != null) {
       listener.off('value');
