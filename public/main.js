@@ -366,21 +366,13 @@ function reserve(time) {
     name: account.name,
     count: counter + 1
   };
-  //alert(JSON.stringify(data));
 
-  // Loading animate.
-  $('#re-loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
-    'background-color' : 'rgba(0, 0, 0, 0.6)'
-  }, 1000);
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#Error211\n' + error.code + '\n' + error.message);
-      $('#re-loading').hide();
     } else {
-      alert('預訂成功');
       ++counter;
       reserveData[counter+''] = Object.assign({}, info);
-      $('#re-loading').hide();
     }
   });
 }
@@ -413,24 +405,16 @@ function cancelReserve(time) {
   data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/times/' + counter] = null;
   data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/count'] =
     counter - 1 == 0 ? null : counter - 1;
-  //alert(JSON.stringify(data))
 
-  // Loading animate.
-  $('#re-loading').css('background-color', 'rgba(0, 0, 0, 0)').show().animate({
-    'background-color' : 'rgba(0, 0, 0, 0.6)'
-  }, 1000);
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#Error221\n' + error.code + '\n' + error.message);
-      $('#re-loading').hide();
     } else {
-      alert('取消成功');
       if (!matchLast) {
         reserveData[changeN] = Object.assign({}, changeInfo);
       }
       reserveData[counter + ''] = null;
       --counter;
-      $('#re-loading').hide();
     }
   });
 }
