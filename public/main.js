@@ -74,18 +74,10 @@ $('#ln-login').click(function() {
         email: email
       };
 
-      var now = new Date(snapshot.child('lastLogin').val());
-      loginDate = {
-        year: now.getFullYear(),
-        month: now.getMonth(),
-        date: now.getDate(),
-        hour: now.getHours(),
-        day: now.getDay()
-      };
+      loginDate = new Date(snapshot.child('lastLogin').val());
       $('#user').show();
       // Init reserve table.
       initDate(0);
-      //room = 1;
       listenToReserveData(0, 1);
     });
   }).catch(function(error) {
@@ -99,28 +91,10 @@ $('#ln-login').click(function() {
   });
 });
 
-function getOffsetDate(offset) {
-  var monthArray = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-  if (loginDate.year % 4 == 0) monthArray[1] = 29;
-
-  var date = loginDate.date + offset;
-  var month = loginDate.month;
-  var year = loginDate.year;
-  if (date < 1) {
-    if (month == 0) {
-      date += 31; month = 11; --year;
-    } else {
-      date += monthArray[--month];
-    }
-  } else if (date > monthArray[month]) {
-    if (month == 11) {
-      date -= 31; month = 0; ++year;
-    } else {
-      date -= monthArray[month++];
-    }
-  }
-
-  return { year: year, date: ('0' + date).slice(-2), month: ('0' + ++month).slice(-2) };
+function offsetDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 }
 
 // Initialize the date according to 'dayOffset'(0 for this week, 7 for next week, 14 for next next week).
@@ -143,11 +117,12 @@ function initDate(dayOffset) {
 
   // Display the week.
   for (var i = 1; i < 8; ++i) {
-    var offset = i - loginDate.day + dayOffset;
-    var offsetDate = getOffsetDate(offset);
+    var offset = i - loginDate.getDay() + dayOffset;
+    var offsetDate = offsetDays(loginDate, offset);
 
-    var dateString = offsetDate.month + '-' + offsetDate.date;
-    $('#re-' + weekArray[i]).text(dateString);
+    var monthStr = ('0' + (offsetDate.getMonth() + 1)).slice(-2),
+        dateStr = ('0' + offsetDate.getDate()).slice(-2);
+    $('#re-' + weekArray[i]).text(monthStr + '-' + dateStr);
   }
 }
 
@@ -162,9 +137,10 @@ function listenToReserveData(dayOffset, room) {
   $('#re-room3').prop('disabled', room == 3);
 
   // Get the date string that going to recive.
-  var offset = -loginDate.day + dayOffset;
-  date = getOffsetDate(offset);
-  var week = (new Date(date.year + '/' + date.month + '/' + date.date + ' 08:00')).getTime();
+  var offset = -loginDate.getDay() + dayOffset;
+  var offsetDate = offsetDays(loginDate, offset);
+  offsetDate.setHours(8, 0, 0, 0);
+  var week = offsetDate.getTime();
 
   // If date and room not change, return.
   if (listenData.week === week && listenData.room === room) return;
