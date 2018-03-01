@@ -110,7 +110,7 @@ function getOffsetDate(offset) {
     if (month == 0) {
       date += 31; month = 11; --year;
     } else {
-      date += monthArray[month--];
+      date += monthArray[--month];
     }
   } else if (date > monthArray[month]) {
     if (month == 11) {
