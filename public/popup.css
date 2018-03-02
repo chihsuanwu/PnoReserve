@@ -80,16 +80,55 @@
   clear: both;
 }
 
-#p-ani-top {
-  top: 0;
-  width: 0;
-  height: 0;
+.p-ani {
+  display: none;
+  border: 2px solid cyan;
+  border-radius: 16px 16px 0 0;
+  bottom: -2px;
+  left: -2px;
+  top: -2px;
+  right: -2px;
   position: absolute;
 }
 
+#p-ani-top {
+  -webkit-animation: ani-top 2s infinite;
+  animation: ani-top 2s infinite;
+}
+
 #p-ani-bottom {
-  bottom: 0;
-  width: 0;
-  height: 0;
-  position: absolute;
+  -webkit-animation: ani-bottom 2s infinite;
+  animation: ani-bottom 2s infinite;
+}
+
+@-webkit-keyframes ani-top {
+    0%   { clip: rect(0px, 244px, 2px, 0px); }
+    25%  { clip: rect(0px, 244px, 124px, 242px); }
+    50%  { clip: rect(122px, 244px, 124px, 0px); }
+    75%  { clip: rect(0px, 2px, 120px, 0px); }
+    100% { clip: rect(0px, 244px, 2px, 0px);}
+}
+
+@keyframes ani-top {
+    0%   {clip: rect(0px, 244px, 2px, 0px); }
+    25%  {clip: rect(0px, 244px, 124px, 242px); }
+    50%  {clip: rect(122px, 244px, 124px, 0px); }
+    75%  {clip: rect(0px, 2px, 124px, 0px); }
+    100% {clip: rect(0px, 244px, 2px, 0px);}
+}
+
+@-webkit-keyframes ani-bottom {
+  0%  { clip: rect(122px, 244px, 124px, 0px); }
+  25%  { clip: rect(0px, 2px, 120px, 0px); }
+  50% { clip: rect(0px, 244px, 2px, 0px);}
+  75%   { clip: rect(0px, 244px, 124px, 242px); }
+  100%  { clip: rect(122px, 244px, 124px, 0px); }
+}
+
+@keyframes ani-bottom {
+  0%  { clip: rect(122px, 244px, 124px, 0px); }
+  25%  { clip: rect(0px, 2px, 120px, 0px); }
+  50% { clip: rect(0px, 244px, 2px, 0px);}
+  75%   { clip: rect(0px, 244px, 124px, 242px); }
+  100%  { clip: rect(122px, 244px, 124px, 0px); }
 }

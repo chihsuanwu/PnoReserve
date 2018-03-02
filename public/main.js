@@ -342,6 +342,7 @@ function reserve(time) {
     count: counter + 1
   };
 
+  $('.p-ani').show();
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#Error211\n' + error.code + '\n' + error.message);
@@ -349,6 +350,7 @@ function reserve(time) {
       ++counter;
       reserveData[counter+''] = Object.assign({}, info);
     }
+    $('.p-ani').hide();
     $('#popup').hide();
   });
 }
@@ -382,6 +384,7 @@ function cancelReserve(time) {
   data['users/' + account.firebaseId + '/reserved/' + listenData.week + '/count'] =
     counter - 1 == 0 ? null : counter - 1;
 
+  $('.p-ani').show();
   firebase.database().ref().update(data, function(error) {
     if (error) {
       alert('#Error221\n' + error.code + '\n' + error.message);
@@ -392,6 +395,7 @@ function cancelReserve(time) {
       reserveData[counter + ''] = null;
       --counter;
     }
+    $('.p-ani').hide();
     $('#popup').hide();
   });
 }
