@@ -64,7 +64,7 @@
   font-size: 18px;
   padding: 2px 4px;
   position: relative;
-  width: 100%;
+  width: 240px;
 }
 
 #p-container::after{
@@ -78,4 +78,18 @@
   border-right: 16px solid transparent;
   border-top: 16px solid rgba(120, 120, 120, 0.9);
   clear: both;
+}
+
+#p-ani-top {
+  top: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+#p-ani-bottom {
+  bottom: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
 }

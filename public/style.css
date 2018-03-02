@@ -1,6 +1,7 @@
 * {
   font-family: 'Noto Sans TC', sans-serif;
   outline: none;
+  text-align: center;
 }
 
 body {
@@ -10,12 +11,14 @@ body {
   min-height: 100vh;
 }
 
+input {
+  text-align: left;
+}
+
 .headtitle {
   color: white;
   font-size: 30px;
   font-weight: bold;
-  text-align: center;
-  float: center;
   background-color: #034;
   padding: 15px
 }
@@ -34,7 +37,6 @@ body {
 #time {
   font-size: 18px;
   position: absolute;
-
   right: 0;
 }
 
@@ -165,6 +167,7 @@ body {
   box-sizing: border-box;
   list-style-type: none;
   display: inline-block;
+  font-size: 16px;
   width: 12.5%;
   height: 36px;
   line-height: 36px;

@@ -291,18 +291,17 @@ $('.re-room').click(function() {
   listenToReserveData(offset, parseInt(this.id.slice(7, 8)));
 });
 
-function showPopUp(x, y, title, message1, message2, status, okArgs) {
+function showPopUp(x, y, title, message1, message2, status, time) {
   $('#p-title').text(title);
   $('#p-message1').text(message1);
   $('#p-message2').text(message2);
   $('#p-ok').off('click');
   $('#p-ok').click(function() {
     switch (status) {
-      case 'RESERVE': reserve(okArgs); break;
-      case 'CANCELRESERVE': cancelReserve(okArgs); break;
+      case 'RESERVE': reserve(time); break;
+      case 'CANCELRESERVE': cancelReserve(time); break;
       default: alert('Error#310');
     }
-    $('#popup').hide();
   });
   $('#popup').show();
   $('#p-container').css({ left: x, top: y });
@@ -350,6 +349,7 @@ function reserve(time) {
       ++counter;
       reserveData[counter+''] = Object.assign({}, info);
     }
+    $('#popup').hide();
   });
 }
 
@@ -392,6 +392,7 @@ function cancelReserve(time) {
       reserveData[counter + ''] = null;
       --counter;
     }
+    $('#popup').hide();
   });
 }
 

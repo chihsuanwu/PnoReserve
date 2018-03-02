@@ -23,6 +23,8 @@
   </div>
   <div id="popup">
     <div id="p-container">
+      <div id="p-ani-top"></div>
+      <div id="p-ani-bottom"></div>
       <div id="p-title"></div>
       <div class="p-message" id="p-message1"></div>
       <div class="p-message" id="p-message2"></div>
@@ -110,164 +112,164 @@
       </div>
       <table id="re-table">
       　 <tr>
-          <th>日期</th>
-          <th>MON</th>
-          <th>TUE</th>
-          <th>WED</th>
-          <th>THU</th>
-          <th>FRI</th>
-          <th>SAT</th>
-          <th>SUN</th>
+          <th>日期</th><!--
+       --><th>MON</th><!--
+       --><th>TUE</th><!--
+       --><th>WED</th><!--
+       --><th>THU</th><!--
+       --><th>FRI</th><!--
+       --><th>SAT</th><!--
+       --><th>SUN</th>
         </tr>
         <tr>
-          <th>時間</th>
-          <th id="re-mon"></th>
-          <th id="re-tue"></th>
-          <th id="re-wed"></th>
-          <th id="re-thu"></th>
-          <th id="re-fri"></th>
-          <th id="re-sat"></th>
-          <th id="re-sun"></th>
+          <th>時間</th><!--
+       --><th id="re-mon"></th><!--
+       --><th id="re-tue"></th><!--
+       --><th id="re-wed"></th><!--
+       --><th id="re-thu"></th><!--
+       --><th id="re-fri"></th><!--
+       --><th id="re-sat"></th><!--
+       --><th id="re-sun"></th>
          </tr>
         <tr class="re-light">
-          <th>08:00~09:00</th>
-          <th class="re-th" id="re-mon-08"></th>
-          <th class="re-th" id="re-tue-08"></th>
-          <th class="re-th" id="re-wed-08"></th>
-          <th class="re-th" id="re-thu-08"></th>
-          <th class="re-th" id="re-fri-08"></th>
-          <th class="re-th" id="re-sat-08"></th>
-          <th class="re-th" id="re-sun-08"></th>
+          <th>08:00~09:00</th><!--
+       --><th class="re-th" id="re-mon-08"></th><!--
+       --><th class="re-th" id="re-tue-08"></th><!--
+       --><th class="re-th" id="re-wed-08"></th><!--
+       --><th class="re-th" id="re-thu-08"></th><!--
+       --><th class="re-th" id="re-fri-08"></th><!--
+       --><th class="re-th" id="re-sat-08"></th><!--
+       --><th class="re-th" id="re-sun-08"></th>
         </tr>
         <tr class="re-dark">
-          <th>09:00~10:00</th>
-          <th class="re-th" id="re-mon-09"></th>
-          <th class="re-th" id="re-tue-09"></th>
-          <th class="re-th" id="re-wed-09"></th>
-          <th class="re-th" id="re-thu-09"></th>
-          <th class="re-th" id="re-fri-09"></th>
-          <th class="re-th" id="re-sat-09"></th>
-          <th class="re-th" id="re-sun-09"></th>
+          <th>09:00~10:00</th><!--
+       --><th class="re-th" id="re-mon-09"></th><!--
+       --><th class="re-th" id="re-tue-09"></th><!--
+       --><th class="re-th" id="re-wed-09"></th><!--
+       --><th class="re-th" id="re-thu-09"></th><!--
+       --><th class="re-th" id="re-fri-09"></th><!--
+       --><th class="re-th" id="re-sat-09"></th><!--
+       --><th class="re-th" id="re-sun-09"></th>
         </tr>
         <tr class="re-light">
-          <th>10:00~11:00</th>
-          <th class="re-th" id="re-mon-10"></th>
-          <th class="re-th" id="re-tue-10"></th>
-          <th class="re-th" id="re-wed-10"></th>
-          <th class="re-th" id="re-thu-10"></th>
-          <th class="re-th" id="re-fri-10"></th>
-          <th class="re-th" id="re-sat-10"></th>
-          <th class="re-th" id="re-sun-10"></th>
+          <th>10:00~11:00</th><!--
+       --><th class="re-th" id="re-mon-10"></th><!--
+       --><th class="re-th" id="re-tue-10"></th><!--
+       --><th class="re-th" id="re-wed-10"></th><!--
+       --><th class="re-th" id="re-thu-10"></th><!--
+       --><th class="re-th" id="re-fri-10"></th><!--
+       --><th class="re-th" id="re-sat-10"></th><!--
+       --><th class="re-th" id="re-sun-10"></th>
         </tr>
         <tr class="re-dark">
-          <th>11:00~12:00</th>
-          <th class="re-th" id="re-mon-11"></th>
-          <th class="re-th" id="re-tue-11"></th>
-          <th class="re-th" id="re-wed-11"></th>
-          <th class="re-th" id="re-thu-11"></th>
-          <th class="re-th" id="re-fri-11"></th>
-          <th class="re-th" id="re-sat-11"></th>
-          <th class="re-th" id="re-sun-11"></th>
+          <th>11:00~12:00</th><!--
+       --><th class="re-th" id="re-mon-11"></th><!--
+       --><th class="re-th" id="re-tue-11"></th><!--
+       --><th class="re-th" id="re-wed-11"></th><!--
+       --><th class="re-th" id="re-thu-11"></th><!--
+       --><th class="re-th" id="re-fri-11"></th><!--
+       --><th class="re-th" id="re-sat-11"></th><!--
+       --><th class="re-th" id="re-sun-11"></th>
         </tr>
         <tr class="re-light">
-          <th>12:00~13:00</th>
-          <th class="re-th" id="re-mon-12"></th>
-          <th class="re-th" id="re-tue-12"></th>
-          <th class="re-th" id="re-wed-12"></th>
-          <th class="re-th" id="re-thu-12"></th>
-          <th class="re-th" id="re-fri-12"></th>
-          <th class="re-th" id="re-sat-12"></th>
-          <th class="re-th" id="re-sun-12"></th>
+          <th>12:00~13:00</th><!--
+       --><th class="re-th" id="re-mon-12"></th><!--
+       --><th class="re-th" id="re-tue-12"></th><!--
+       --><th class="re-th" id="re-wed-12"></th><!--
+       --><th class="re-th" id="re-thu-12"></th><!--
+       --><th class="re-th" id="re-fri-12"></th><!--
+       --><th class="re-th" id="re-sat-12"></th><!--
+       --><th class="re-th" id="re-sun-12"></th>
         </tr>
         <tr class="re-dark">
-          <th>13:00~14:00</th>
-          <th class="re-th" id="re-mon-13"></th>
-          <th class="re-th" id="re-tue-13"></th>
-          <th class="re-th" id="re-wed-13"></th>
-          <th class="re-th" id="re-thu-13"></th>
-          <th class="re-th" id="re-fri-13"></th>
-          <th class="re-th" id="re-sat-13"></th>
-          <th class="re-th" id="re-sun-13"></th>
+          <th>13:00~14:00</th><!--
+       --><th class="re-th" id="re-mon-13"></th><!--
+       --><th class="re-th" id="re-tue-13"></th><!--
+       --><th class="re-th" id="re-wed-13"></th><!--
+       --><th class="re-th" id="re-thu-13"></th><!--
+       --><th class="re-th" id="re-fri-13"></th><!--
+       --><th class="re-th" id="re-sat-13"></th><!--
+       --><th class="re-th" id="re-sun-13"></th>
         </tr>
         <tr class="re-light">
-          <th>14:00~15:00</th>
-          <th class="re-th" id="re-mon-14"></th>
-          <th class="re-th" id="re-tue-14"></th>
-          <th class="re-th" id="re-wed-14"></th>
-          <th class="re-th" id="re-thu-14"></th>
-          <th class="re-th" id="re-fri-14"></th>
-          <th class="re-th" id="re-sat-14"></th>
-          <th class="re-th" id="re-sun-14"></th>
+          <th>14:00~15:00</th><!--
+       --><th class="re-th" id="re-mon-14"></th><!--
+       --><th class="re-th" id="re-tue-14"></th><!--
+       --><th class="re-th" id="re-wed-14"></th><!--
+       --><th class="re-th" id="re-thu-14"></th><!--
+       --><th class="re-th" id="re-fri-14"></th><!--
+       --><th class="re-th" id="re-sat-14"></th><!--
+       --><th class="re-th" id="re-sun-14"></th>
         </tr>
         <tr class="re-dark">
-          <th>15:00~16:00</th>
-          <th class="re-th" id="re-mon-15"></th>
-          <th class="re-th" id="re-tue-15"></th>
-          <th class="re-th" id="re-wed-15"></th>
-          <th class="re-th" id="re-thu-15"></th>
-          <th class="re-th" id="re-fri-15"></th>
-          <th class="re-th" id="re-sat-15"></th>
-          <th class="re-th" id="re-sun-15"></th>
+          <th>15:00~16:00</th><!--
+       --><th class="re-th" id="re-mon-15"></th><!--
+       --><th class="re-th" id="re-tue-15"></th><!--
+       --><th class="re-th" id="re-wed-15"></th><!--
+       --><th class="re-th" id="re-thu-15"></th><!--
+       --><th class="re-th" id="re-fri-15"></th><!--
+       --><th class="re-th" id="re-sat-15"></th><!--
+       --><th class="re-th" id="re-sun-15"></th>
         </tr>
         <tr class="re-light">
-          <th>16:00~17:00</th>
-          <th class="re-th" id="re-mon-16"></th>
-          <th class="re-th" id="re-tue-16"></th>
-          <th class="re-th" id="re-wed-16"></th>
-          <th class="re-th" id="re-thu-16"></th>
-          <th class="re-th" id="re-fri-16"></th>
-          <th class="re-th" id="re-sat-16"></th>
-          <th class="re-th" id="re-sun-16"></th>
+          <th>16:00~17:00</th><!--
+       --><th class="re-th" id="re-mon-16"></th><!--
+       --><th class="re-th" id="re-tue-16"></th><!--
+       --><th class="re-th" id="re-wed-16"></th><!--
+       --><th class="re-th" id="re-thu-16"></th><!--
+       --><th class="re-th" id="re-fri-16"></th><!--
+       --><th class="re-th" id="re-sat-16"></th><!--
+       --><th class="re-th" id="re-sun-16"></th>
         </tr>
         <tr class="re-dark">
-          <th>17:00~18:00</th>
-          <th class="re-th" id="re-mon-17"></th>
-          <th class="re-th" id="re-tue-17"></th>
-          <th class="re-th" id="re-wed-17"></th>
-          <th class="re-th" id="re-thu-17"></th>
-          <th class="re-th" id="re-fri-17"></th>
-          <th class="re-th" id="re-sat-17"></th>
-          <th class="re-th" id="re-sun-17"></th>
+          <th>17:00~18:00</th><!--
+       --><th class="re-th" id="re-mon-17"></th><!--
+       --><th class="re-th" id="re-tue-17"></th><!--
+       --><th class="re-th" id="re-wed-17"></th><!--
+       --><th class="re-th" id="re-thu-17"></th><!--
+       --><th class="re-th" id="re-fri-17"></th><!--
+       --><th class="re-th" id="re-sat-17"></th><!--
+       --><th class="re-th" id="re-sun-17"></th>
         </tr>
         <tr class="re-light">
-          <th>18:00~19:00</th>
-          <th class="re-th" id="re-mon-18"></th>
-          <th class="re-th" id="re-tue-18"></th>
-          <th class="re-th" id="re-wed-18"></th>
-          <th class="re-th" id="re-thu-18"></th>
-          <th class="re-th" id="re-fri-18"></th>
-          <th class="re-th" id="re-sat-18"></th>
-          <th class="re-th" id="re-sun-18"></th>
+          <th>18:00~19:00</th><!--
+      --><th class="re-th" id="re-mon-18"></th><!--
+      --><th class="re-th" id="re-tue-18"></th><!--
+      --><th class="re-th" id="re-wed-18"></th><!--
+      --><th class="re-th" id="re-thu-18"></th><!--
+      --><th class="re-th" id="re-fri-18"></th><!--
+      --><th class="re-th" id="re-sat-18"></th><!--
+      --><th class="re-th" id="re-sun-18"></th>
         </tr>
         <tr class="re-dark">
-          <th>19:00~20:00</th>
-          <th class="re-th" id="re-mon-19"></th>
-          <th class="re-th" id="re-tue-19"></th>
-          <th class="re-th" id="re-wed-19"></th>
-          <th class="re-th" id="re-thu-19"></th>
-          <th class="re-th" id="re-fri-19"></th>
-          <th class="re-th" id="re-sat-19"></th>
-          <th class="re-th" id="re-sun-19"></th>
+          <th>19:00~20:00</th><!--
+      --><th class="re-th" id="re-mon-19"></th><!--
+      --><th class="re-th" id="re-tue-19"></th><!--
+      --><th class="re-th" id="re-wed-19"></th><!--
+      --><th class="re-th" id="re-thu-19"></th><!--
+      --><th class="re-th" id="re-fri-19"></th><!--
+      --><th class="re-th" id="re-sat-19"></th><!--
+      --><th class="re-th" id="re-sun-19"></th>
         </tr>
         <tr class="re-light">
-          <th>20:00~21:00</th>
-          <th class="re-th" id="re-mon-20"></th>
-          <th class="re-th" id="re-tue-20"></th>
-          <th class="re-th" id="re-wed-20"></th>
-          <th class="re-th" id="re-thu-20"></th>
-          <th class="re-th" id="re-fri-20"></th>
-          <th class="re-th" id="re-sat-20"></th>
-          <th class="re-th" id="re-sun-20"></th>
+          <th>20:00~21:00</th><!--
+       --><th class="re-th" id="re-mon-20"></th><!--
+       --><th class="re-th" id="re-tue-20"></th><!--
+       --><th class="re-th" id="re-wed-20"></th><!--
+       --><th class="re-th" id="re-thu-20"></th><!--
+       --><th class="re-th" id="re-fri-20"></th><!--
+       --><th class="re-th" id="re-sat-20"></th><!--
+       --><th class="re-th" id="re-sun-20"></th>
         </tr>
         <tr class="re-dark">
-          <th>21:00~22:00</th>
-          <th class="re-th" id="re-mon-21"></th>
-          <th class="re-th" id="re-tue-21"></th>
-          <th class="re-th" id="re-wed-21"></th>
-          <th class="re-th" id="re-thu-21"></th>
-          <th class="re-th" id="re-fri-21"></th>
-          <th class="re-th" id="re-sat-21"></th>
-          <th class="re-th" id="re-sun-21"></th>
+          <th>21:00~22:00</th><!--
+       --><th class="re-th" id="re-mon-21"></th><!--
+       --><th class="re-th" id="re-tue-21"></th><!--
+       --><th class="re-th" id="re-wed-21"></th><!--
+       --><th class="re-th" id="re-thu-21"></th><!--
+       --><th class="re-th" id="re-fri-21"></th><!--
+       --><th class="re-th" id="re-sat-21"></th><!--
+       --><th class="re-th" id="re-sun-21"></th>
         </tr>
       </table>
     </div>
