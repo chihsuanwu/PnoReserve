@@ -113,7 +113,7 @@ function initDate(dayOffset) {
     default: alert('Error#120');
   }
 
-  var weekArray = new Array('', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
+  var weekArray = new Array('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
 
   // Display the week.
   var day = loginDate.getDay();
