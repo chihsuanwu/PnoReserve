@@ -104,7 +104,7 @@ function initDate(dayOffset) {
   }
 
   $('#re-nextweek').prop('disabled', dayOffset === 14 ||
-    (dayOffset === 7 && loginDate.day === 0 && loginDate.hour < 8));
+    (dayOffset === 7 && (loginDate.getDay() > 0 || loginDate.getHours() < 8)));
   $('#re-lastweek').prop('disabled', dayOffset === 0);
   switch (dayOffset) {
     case 0: $('#re-week').text('本週'); break;
@@ -116,8 +116,11 @@ function initDate(dayOffset) {
   var weekArray = new Array('', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
 
   // Display the week.
-  for (var i = 1; i < 8; ++i) {
-    var offset = i - loginDate.getDay() + dayOffset;
+  var day = loginDate.getDay();
+  dayOffset -= (day === 0 ? 6 : day - 1);
+  for (var i = 0; i < 7; ++i) {
+
+    var offset = i + dayOffset;
     var offsetDate = offsetDays(loginDate, offset);
 
     var monthStr = ('0' + (offsetDate.getMonth() + 1)).slice(-2),
@@ -137,9 +140,10 @@ function listenToReserveData(dayOffset, room) {
   $('#re-room3').prop('disabled', room == 3);
 
   // Get the date string that going to recive.
-  var offset = -loginDate.getDay() + dayOffset;
-  var offsetDate = offsetDays(loginDate, offset);
-  offsetDate.setHours(8, 0, 0, 0);
+  var day = loginDate.getDay();
+  dayOffset -= (day === 0 ? 6 : day - 1);
+  var offsetDate = offsetDays(loginDate, dayOffset);
+  offsetDate.setHours(0, 0, 0, 0);
   var week = offsetDate.getTime();
 
   // If date and room not change, return.
@@ -303,7 +307,7 @@ function showPopUp(x, y, title, message1, message2, status, time) {
       default: alert('Error#310');
     }
   });
-  $('#popup').show();
+  $('.popup').show();
   $('#p-container').css({ left: x, top: y });
 }
 
@@ -320,7 +324,7 @@ $('#account').click(function(e) { e.stopPropagation(); });
 
 $('body').click(function() { $('#account').hide(); });
 
-$('#p-cancel').click(function() { $('#popup').hide(); });
+$('#p-cancel').click(function() { $('.popup').hide(); });
 
 function reserve(time) {
   // Update these data simultaneously:
@@ -351,7 +355,7 @@ function reserve(time) {
       reserveData[counter+''] = Object.assign({}, info);
     }
     $('.p-ani').hide();
-    $('#popup').hide();
+    $('.popup').hide();
   });
 }
 
@@ -396,7 +400,7 @@ function cancelReserve(time) {
       --counter;
     }
     $('.p-ani').hide();
-    $('#popup').hide();
+    $('.popup').hide();
   });
 }
 
