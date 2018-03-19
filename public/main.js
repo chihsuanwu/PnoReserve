@@ -487,8 +487,8 @@ $('#ac-change-password').click(function() {
 
 $(function() {
   firebase.database().ref('message').once('value', function(snapshot) {
-    if (snapshot.val() != null) {
-      alert(snapshot.val());
-    }
+    snapshot.forEach(function(child) {
+      alert(child.val());
+    });
   });
 });
