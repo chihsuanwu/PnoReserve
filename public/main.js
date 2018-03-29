@@ -86,7 +86,7 @@ $('#ln-login').click(function() {
       case 'auth/user-not-found': $('#ln-email-message').text('此帳號不存在'); $('#ln-email').focus(); break;
       case 'auth/invalid-email': $('#ln-email-message').text('信箱格式錯誤'); $('#ln-email').focus(); break;
       case 'auth/wrong-password': $('#ln-password-message').text('密碼錯誤'); $('#ln-password').focus();  break;
-      default: alert('Error#81\n' + error.code + '\n' + error.message);
+      default: alert('Error#89\n' + error.code + '\n' + error.message);
     }
   });
 });
@@ -100,7 +100,7 @@ function offsetDays(date, days) {
 // Initialize the date according to 'dayOffset'(0 for this week, 7 for next week, 14 for next next week).
 function initDate(dayOffset) {
   if (loginDate == null) {
-    alert('Error#112'); return;
+    alert('Error#103'); return;
   }
 
   $('#re-nextweek').prop('disabled', dayOffset === 14 ||
@@ -110,7 +110,7 @@ function initDate(dayOffset) {
     case 0: $('#re-week').text('本週'); break;
     case 7: $('#re-week').text('下週'); break;
     case 14: $('#re-week').text('下下週'); break;
-    default: alert('Error#120');
+    default: alert('Error#113');
   }
 
   var weekArray = new Array('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
@@ -132,7 +132,7 @@ function initDate(dayOffset) {
 // Listen to firebase.
 function listenToReserveData(dayOffset, room) {
   if (loginDate == null) {
-    alert('Error#104'); return;
+    alert('Error#135'); return;
   }
 
   $('#re-room1').prop('disabled', room == 1);
@@ -180,7 +180,9 @@ function listenToReserveData(dayOffset, room) {
       listenData.count = 0;
       snapshot.forEach(function(child) {
         ++listenData.count;
-        $('#re-' + child.key).text(child.child('name').val());
+        var display = child.child('teach').val() ? '社課：' : '';
+        display += child.child('name').val();
+        $('#re-' + child.key).text(display);
       });
     });
   });
@@ -259,7 +261,7 @@ $('#na-new-account').click(function() {
       case 'auth/email-already-in-use': $('#na-email-message').text('信箱已被使用'); $('#na-email').focus(); break;
       case 'auth/weak-password': $('#na-password-message').text('密碼長度需至少6個字');
                                  $('#na-password').focus(); break;
-      default: alert('Error#84\n' + error.code + '\n' + error.message);
+      default: alert('Error#264\n' + error.code + '\n' + error.message);
     }
   });
 });
@@ -271,7 +273,7 @@ $('.re-switchweek').click(function() {
     case '本週': break;
     case '下週': offset += 7; break;
     case '下下週': offset += 14; break;
-    default: alert('Error#279');
+    default: alert('Error#276');
   }
 
   var room = 1;
@@ -300,13 +302,21 @@ function showPopUp(x, y, title, message1, message2, status, time) {
   $('#p-message1').text(message1);
   $('#p-message2').text(message2);
   $('#p-ok').off('click');
-  $('#p-ok').click(function() {
-    switch (status) {
-      case 'RESERVE': reserve(time); break;
-      case 'CANCELRESERVE': cancelReserve(time); break;
-      default: alert('Error#310');
-    }
-  });
+  $('#p-teach').off('click');
+  if (status == 'RESERVE') {
+    $('#p-teach').show();
+    $('#p-teach').click(function() {
+      reserve(time, true);
+    });
+    $('#p-ok').click(function() {
+      reserve(time);
+    });
+  } else {
+    $('#p-teach').hide();
+    $('#p-ok').click(function() {
+      cancelReserve(time);
+    });
+  }
   $('.popup').show();
   $('#p-container').css({ left: x, top: y });
 }
@@ -326,7 +336,8 @@ $('body').click(function() { $('#account').hide(); });
 
 $('#p-cancel').click(function() { $('.popup').hide(); });
 
-function reserve(time) {
+function reserve(time, teach) {
+  $('#p-container button').prop('disabled', true);
   // Update these data simultaneously:
   //   users/<uid>/reserved/time<n>
   //   users/<uid>/reserved/count
@@ -341,7 +352,11 @@ function reserve(time) {
   if (listenData.count === 0) {
     data[listenData.room + '/' + listenData.week + '/number'] = listenData.week;
   }
-  data[listenData.room + '/' + listenData.week + '/times/' + time] = {
+  data[listenData.room + '/' + listenData.week + '/times/' + time] = teach ? {
+    name: account.name,
+    count: counter + 1,
+    teach: true
+  } : {
     name: account.name,
     count: counter + 1
   };
@@ -349,17 +364,19 @@ function reserve(time) {
   $('.p-ani').show();
   firebase.database().ref().update(data, function(error) {
     if (error) {
-      alert('#Error211\n' + error.code + '\n' + error.message);
+      alert('#Error366\n' + error.code + '\n' + error.message);
     } else {
       ++counter;
       reserveData[counter+''] = Object.assign({}, info);
     }
     $('.p-ani').hide();
     $('.popup').hide();
+    $('#p-container button').prop('disabled', false);
   });
 }
 
 function cancelReserve(time) {
+  $('#p-container button').prop('disabled', true);
   var data = {};
   var info = {
     time: time,
@@ -391,7 +408,7 @@ function cancelReserve(time) {
   $('.p-ani').show();
   firebase.database().ref().update(data, function(error) {
     if (error) {
-      alert('#Error221\n' + error.code + '\n' + error.message);
+      alert('#Error408\n' + error.code + '\n' + error.message);
     } else {
       if (!matchLast) {
         reserveData[changeN] = Object.assign({}, changeInfo);
@@ -401,6 +418,7 @@ function cancelReserve(time) {
     }
     $('.p-ani').hide();
     $('.popup').hide();
+    $('#p-container button').prop('disabled', false);
   });
 }
 
@@ -411,7 +429,12 @@ $('.re-th').click(function(e) {
   if ($('#re-week').text() === '本週') {
     return;
   }
-  if ($(this).text() == '') {
+  var name = $(this).text();
+  if (name.substring(0, 3) == '社課：') {
+    name = name.substring(3, name.length);
+  }
+
+  if (name == '') {
     if (counter >= 7) {
       alert('預訂時段已達上限7次');
       return;
@@ -421,7 +444,7 @@ $('.re-th').click(function(e) {
     var message1 = '預訂琴房' + listenData.room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00',
         message2 = '剩餘預定次數:' + (7 - counter);
     showPopUp(x, y, '預訂確認', message1, message2, 'RESERVE', this.id.slice(3, 9));
-  } else if ($(this).text() == account.name) {
+  } else if (name == account.name) {
     var x = e.pageX-122+"px", y = e.pageY-140+"px";
     var date = $('#re-' + this.id.slice(3, 6)).text(), time = parseInt(this.id.slice(7, 9));
     var message = '取消預訂琴房' + listenData.room + ' ' + date + ' ' + time + ':00~' + (time + 1) + ':00';
@@ -457,7 +480,7 @@ $('#ac-logout').click(function() {
     }
   }, function(error) {
     $('#loading').hide();
-    alert('Error#431');
+    alert('Error#479');
   });
 });
 
@@ -479,7 +502,7 @@ $('#ac-change-password').click(function() {
       $('#loading').hide();
       switch (error.code) {
         case 'auth/weak-password': alert('更改失敗,密碼長度需至少6個字'); break;
-        default: alert('Error#509\n' + error.code + '\n' + error.message);
+        default: alert('Error#501\n' + error.code + '\n' + error.message);
       }
     });
   }
